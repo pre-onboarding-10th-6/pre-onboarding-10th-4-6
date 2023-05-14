@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
+import { Todo } from '../pages/Main'
+
 const baseURL = process.env.REACT_APP_API_URL
 const token = process.env.REACT_APP_TOKEN
 
@@ -19,7 +21,7 @@ interface ApiRequest {
     url: string,
     data?: string,
     config?: AxiosRequestConfig
-  ) => Promise<unknown>
+  ) => Promise<Todo>
 }
 
 const apiRequest: ApiRequest = {

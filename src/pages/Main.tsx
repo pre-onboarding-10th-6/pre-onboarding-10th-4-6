@@ -5,8 +5,15 @@ import Header from '../components/Header'
 import InputTodo from '../components/InputTodo'
 import TodoList from '../components/TodoList'
 
+export interface Todo {
+  title: string
+  createdAt?: string
+  id?: string
+  updatedAt?: string
+}
+
 const Main = () => {
-  const [todoListData, setTodoListData] = useState([])
+  const [todoListData, setTodoListData] = useState<Todo[]>([])
 
   useEffect(() => {
     ;(async () => {
