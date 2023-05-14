@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 
 import '@testing-library/jest-dom' //toBeInTheDocument() 를 사용하기 위해서 필요합니다!
-import TodoInput from '../../components/todos/input'
 import TodoList from '../../components/todos/list'
+import TodoInput from '../../components/todos/search/oldInedx'
 
 import Main from '.'
 

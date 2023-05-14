@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
 import { createTodo } from '../../../api/todo'
-import useFocus from '../../../hooks/useFocus'
+import useFocus from '../../../hooks/useFocusOld'
 import { Todo } from '../list/types'
 
 interface Props {

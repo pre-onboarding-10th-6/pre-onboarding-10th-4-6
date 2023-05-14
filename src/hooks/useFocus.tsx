@@ -1,12 +1,28 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-const useFocus = () => {
-  const ref = useRef<HTMLInputElement>(null)
-  const setFocus = () => {
-    ref.current && ref.current.focus()
+const useClickOutside = () => {
+  const ref = useRef<HTMLFormElement>(null)
+  const [isFocus, setIsFocus] = useState(false)
+
+  const onFocusHandler = (bool: boolean) => {
+    setIsFocus(bool)
   }
 
-  return { ref, setFocus }
+  useEffect(() => {
+    const listener = (e: MouseEvent) => {
+      if (!ref.current || ref.current.contains(e.target as Node)) {
+        return
+      }
+      onFocusHandler(false)
+    }
+    document.addEventListener('mousedown', listener)
+
+    return () => {
+      document.removeEventListener('mousedown', listener)
+    }
+  }, [ref])
+
+  return { formRef: ref, isFocus, onFocusHandler }
 }
 
-export default useFocus
+export default useClickOutside
