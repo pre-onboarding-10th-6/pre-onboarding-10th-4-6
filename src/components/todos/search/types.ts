@@ -17,7 +17,7 @@ export interface SearchBarProps extends Props {
 
 export interface ContextProps {
   input: string
-  result: string
+  result: string[]
   isLoading: boolean
   isFocus: boolean
   formRef: React.RefObject<HTMLFormElement> | null
@@ -27,4 +27,14 @@ export interface ContextDispatchProps {
   setInput: React.Dispatch<React.SetStateAction<string>>
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   onFocusHandler: (bool: boolean) => void
+  onInputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+export interface SearchResult {
+  q: string
+  page: number
+  limit: number
+  result: string[]
+  qty: number
+  total: number
 }

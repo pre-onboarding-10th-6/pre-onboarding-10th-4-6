@@ -1,10 +1,10 @@
-import apiRequest from './index'
+import baseInstance from './index'
 
 const RESOURCE = '/todos'
 
 export const getTodoList = async () => {
   try {
-    const response = await apiRequest.get(`${RESOURCE}`)
+    const response = await baseInstance.get(`${RESOURCE}`)
 
     return response
   } catch (error) {
@@ -18,7 +18,7 @@ interface PayloadCreate {
 
 export const createTodo = async (data: PayloadCreate) => {
   try {
-    const response = await apiRequest.post(`${RESOURCE}`, data)
+    const response = await baseInstance.post(`${RESOURCE}`, data)
 
     return response
   } catch (error) {
@@ -28,7 +28,7 @@ export const createTodo = async (data: PayloadCreate) => {
 
 export const deleteTodo = async (id: string) => {
   try {
-    const response = await apiRequest.delete(`${RESOURCE}/${id}`)
+    const response = await baseInstance.delete(`${RESOURCE}/${id}`)
 
     return response
   } catch (error) {

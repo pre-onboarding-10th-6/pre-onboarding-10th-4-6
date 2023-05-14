@@ -30,14 +30,10 @@ const Main = () => {
               LeftIcon={<BiSearch />}
               rightIcon={<FaSpinner className="spinner" />}
             />
-            <Dropdown>
-              <Dropdown.Item>hi</Dropdown.Item>
-              <Dropdown.Item>hi2</Dropdown.Item>
-              <Dropdown.Item>Hello</Dropdown.Item>
-              <Dropdown.Item>test</Dropdown.Item>
-            </Dropdown>
+            <Dropdown />
           </Search>
         </SearchProvider>
+
         <TodoList todos={todoListData} setTodos={setTodoListData} />
       </div>
     </div>

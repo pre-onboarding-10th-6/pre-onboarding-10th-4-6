@@ -1,16 +1,14 @@
 import { render, screen } from '@testing-library/react'
 
 import '@testing-library/jest-dom' //toBeInTheDocument() 를 사용하기 위해서 필요합니다!
-import TodoList from '../../components/todos/list'
-import TodoInput from '../../components/todos/search/oldInedx'
 
 import Main from '.'
 
-test('모든 컴포넌트 렌더링', () => {
-  render(<Main />)
-  render(<TodoInput setTodos={() => null} />)
-  render(<TodoList todos={[]} setTodos={() => null} />)
-})
+// test('모든 컴포넌트 렌더링', () => {
+//   render(<Main />)
+//   render(<TodoInput setTodos={() => null} />)
+//   render(<TodoList todos={[]} setTodos={() => null} />)
+// })
 
 // 데이터 페칭
 

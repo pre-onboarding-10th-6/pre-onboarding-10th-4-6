@@ -44,18 +44,19 @@ const Search = ({ children, setTodos }: SearchProps) => {
 
 Search.SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
   const { input, isLoading } = useContext(SearchContext)
-  const { setInput, onFocusHandler } = useContext(SearchDispatchContext)
+  const { onFocusHandler, onInputChangeHandler } = useContext(
+    SearchDispatchContext
+  )
 
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setInput(e.target.value)
   const onFocus = () => onFocusHandler(true)
 
   return (
     <S.SearchBox>
       {LeftIcon}
       <input
+        placeholder="todo를 추가하세요"
         type="text"
-        onChange={onChangeHandler}
+        onChange={onInputChangeHandler}
         onFocus={onFocus}
         value={input}
       />
