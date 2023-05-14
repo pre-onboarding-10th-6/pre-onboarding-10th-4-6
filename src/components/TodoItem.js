@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
-import { FaSpinner, FaTrash } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
+import styled from 'styled-components'
 
 import { deleteTodo } from '../api/todo'
+import { StSpinner } from '../styles/common'
 
 const TodoItem = ({ id, title, setTodos }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,19 +23,48 @@ const TodoItem = ({ id, title, setTodos }) => {
   }, [id, setTodos])
 
   return (
-    <li className="item">
+    <StItem>
       <span>{title}</span>
-      <div className="item-option">
+      <StItemOption>
         {!isLoading ? (
-          <button onClick={() => handleRemoveTodo()}>
-            <FaTrash className="btn-trash" />
-          </button>
+          <StOptionButton onClick={() => handleRemoveTodo()}>
+            <StFaTrash />
+          </StOptionButton>
         ) : (
-          <FaSpinner className="spinner" />
+          <StSpinner />
         )}
-      </div>
-    </li>
+      </StItemOption>
+    </StItem>
   )
 }
 
 export default TodoItem
+
+const StFaTrash = styled(FaTrash)`
+  color: orangered;
+  font-size: 16px;
+  &:hover {
+    opacity: 0.5;
+  }
+`
+
+const StItem = styled.li`
+  list-style-type: none;
+  padding: 17px 1.5rem;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 1.2rem;
+  letter-spacing: 1.5px;
+  &:hover {
+    opacity: 0.85;
+    background-color: #eaeaea;
+  }
+`
+const StItemOption = styled.div`
+  float: right;
+`
+
+const StOptionButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`
