@@ -12,7 +12,11 @@ export const getTodoList = async () => {
   }
 }
 
-export const createTodo = async data => {
+interface PayloadCreate {
+  title: string
+}
+
+export const createTodo = async (data: PayloadCreate) => {
   try {
     const response = await apiRequest.post(`${RESOURCE}`, data)
 
@@ -22,7 +26,7 @@ export const createTodo = async data => {
   }
 }
 
-export const deleteTodo = async id => {
+export const deleteTodo = async (id: string) => {
   try {
     const response = await apiRequest.delete(`${RESOURCE}/${id}`)
 
