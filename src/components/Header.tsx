@@ -1,3 +1,5 @@
+import React from 'react'
+
 const Header = () => {
   const headerStyle = {
     padding: '20px 0',
@@ -14,7 +16,7 @@ const Header = () => {
 
   return (
     <header style={headerStyle}>
-      <h1 style={titleStyle}>Toodos</h1>
+      <h1 style={titleStyle as React.CSSProperties}>Toodos</h1>
     </header>
   )
 }

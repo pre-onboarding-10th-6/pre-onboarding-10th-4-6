@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { getTodoList } from '../api/todo'
 import Header from '../components/Header'
 import InputTodo from '../components/InputTodo'
 import TodoList from '../components/TodoList'
+import { ITodo } from '../types/todo'
 
 const Main = () => {
-  const [todoListData, setTodoListData] = useState([])
+  const [todoListData, setTodoListData] = useState<ITodo[]>([])
+
+  const initTodoList = useCallback(async () => {
+    const { data } = await getTodoList()
+    setTodoListData(data || [])
+  }, [])
 
   useEffect(() => {
-    ;(async () => {
-      const { data } = await getTodoList()
-      setTodoListData(data || [])
-    })()
+    initTodoList()
   }, [])
 
   return (
@@ -21,7 +24,9 @@ const Main = () => {
       <StInner>
         <Header />
         <InputTodo setTodos={setTodoListData} />
-        <TodoList todos={todoListData} setTodos={setTodoListData} />
+        {todoListData && (
+          <TodoList todos={todoListData} setTodos={setTodoListData} />
+        )}
       </StInner>
     </StContainer>
   )

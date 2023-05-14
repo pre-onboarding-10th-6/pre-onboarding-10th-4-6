@@ -1,8 +1,17 @@
+import { Interface } from 'readline'
+
+import { Dispatch } from 'react'
 import { styled } from 'styled-components'
+
+import { ITodo } from '../types/todo'
 
 import TodoItem from './TodoItem'
 
-const TodoList = ({ todos, setTodos }) => {
+interface IProps {
+  todos: ITodo[]
+  setTodos: Dispatch<React.SetStateAction<ITodo[]>>
+}
+const TodoList = ({ todos, setTodos }: IProps) => {
   return todos.length ? (
     <ul>
       {todos.map(({ id, title }) => (
