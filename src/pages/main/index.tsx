@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
+import { BiSearch } from 'react-icons/bi'
+import { FaSpinner } from 'react-icons/fa'
 
 import { getTodoList } from '../../api/todo'
 import Header from '../../components/Header'
-import TodoInput from '../../components/todos/input'
 import TodoList from '../../components/todos/list'
 import { Todo } from '../../components/todos/list/types'
+import Search from '../../components/todos/search'
+import SearchProvider from '../../components/todos/search/context'
+import Dropdown from '../../components/todos/search/dropdown'
 
 const Main = () => {
   const [todoListData, setTodoListData] = useState<Todo[]>([])
@@ -20,7 +24,16 @@ const Main = () => {
     <div className="container">
       <div className="inner">
         <Header />
-        <TodoInput setTodos={setTodoListData} />
+        <SearchProvider>
+          <Search setTodos={setTodoListData}>
+            <Search.SearchBar
+              LeftIcon={<BiSearch />}
+              rightIcon={<FaSpinner className="spinner" />}
+            />
+            <Dropdown />
+          </Search>
+        </SearchProvider>
+
         <TodoList todos={todoListData} setTodos={setTodoListData} />
       </div>
     </div>
