@@ -1,31 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { SearchData } from '../api/search'
 import { highlightText } from '../utils/highlightText'
-
-const mockData = {
-  opcode: 200,
-  message: 'OK',
-  data: {
-    q: 'lorem',
-    result: [
-      'Maecenas in lorem sit amet felis volutpat dapibus vulputate at dui.',
-      'Nam porta lorem ut turpis pellentesque, et efficitur felis ullamcorper.',
-      'Duis fringilla turpis vel lorem eleifend, sit amet hendrerit velit gravida.',
-      'Cras in felis eget augue cursus placerat ac eget lorem.',
-      'Sed id orci quis mi porttitor pulvinar cursus eget lorem.',
-      'Fusce tincidunt lorem ac purus elementum, ut fermentum lacus mollis.',
-      'Nam commodo lorem ac posuere dignissim.',
-      'Etiam eu elit finibus enim consequat scelerisque aliquam vulputate lorem.',
-      'Donec in lorem id eros ornare aliquam ut a nisi.',
-      'Donec efficitur nulla eget lorem sollicitudin, in blandit massa dictum.'
-    ],
-    qty: 10,
-    total: 19,
-    page: 1,
-    limit: 10
-  }
-}
 
 const ListContainer = styled.div`
   width: 100%;
@@ -56,31 +33,41 @@ const ListItem = styled.li`
 const Highlighted = styled.span`
   color: red;
 `
-interface RecommandKeywordProps {
+interface RecommandKeywordProp {
+  keywordData: SearchData | null
   keyword: string
 }
 
-const RecommandKeyword: React.FC<RecommandKeywordProps> = ({ keyword }) => {
-  console.log(keyword)
-
+const RecommandKeyword: React.FC<RecommandKeywordProp> = ({
+  keywordData,
+  keyword
+}) => {
+  const shouldRenderList =
+    keyword.trim() !== '' && keywordData && keywordData?.result?.length > 0
   return (
     <ListContainer>
-      <ul>
-        {mockData.data.result.map((item, index) => {
-          const splitText = highlightText(item, keyword)
-          return (
-            <ListItem key={index}>
-              {splitText.map((text, i) =>
-                text.toLowerCase() === keyword.toLowerCase() ? (
-                  <Highlighted key={i}>{text}</Highlighted>
-                ) : (
-                  text
-                )
-              )}
-            </ListItem>
-          )
-        })}
-      </ul>
+      {shouldRenderList ? (
+        <ul>
+          {keywordData?.result?.map((item, index) => {
+            const splitText = highlightText(item, keyword)
+            return (
+              <ListItem key={index}>
+                {splitText.map((text, i) =>
+                  text.toLowerCase() === keyword.toLowerCase() ? (
+                    <Highlighted key={i}>{text}</Highlighted>
+                  ) : (
+                    text
+                  )
+                )}
+              </ListItem>
+            )
+          })}
+        </ul>
+      ) : keyword.trim() !== '' &&
+        keywordData?.result &&
+        keywordData?.result.length !== 0 ? (
+        <p>Loading...</p>
+      ) : null}
     </ListContainer>
   )
 }

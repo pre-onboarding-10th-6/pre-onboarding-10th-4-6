@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, RefObject } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
 import { SearchData, getSearchData } from '../api/search'
 import { createTodo } from '../api/todo'
+import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { Todo } from '../pages/Main'
-import debounce from '../utils/debounce'
 
 import RecommandKeyword from './RecommandKeyword'
 
@@ -15,18 +15,15 @@ const InputTodo = ({
   setTodos: (value: ((prevState: Todo[]) => Todo[]) | Todo[]) => void
 }) => {
   const [inputText, setInputText] = useState<string>('')
+  const debouncedInputText = useDebounce(inputText, 2000)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [keywordData, setKeywordData] = useState<SearchData[]>([])
+  const [keywordData, setKeywordData] = useState<SearchData | null>(null)
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
 
   useEffect(() => {
     setFocus()
   }, [setFocus])
-
-  useEffect(() => {
-    console.log(inputText)
-  }, [inputText])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,24 +53,25 @@ const InputTodo = ({
     [inputText, setTodos]
   )
 
-  const fetchKeywordData = async (keyword: string) => {
-    const data = await getSearchData({ q: keyword })
-    setKeywordData(prevKeywordData => [...prevKeywordData, data])
+  const fetchKeywordData = async (
+    keyword: string,
+    page: number,
+    limit: number
+  ) => {
+    if (keyword.trim() === '') {
+      return
+    }
+    const data = await getSearchData({ q: keyword, page: page, limit: limit })
+    console.log(data.data)
+    setKeywordData(data.data)
   }
 
-  const debouncedFetchKeywordData = useMemo(
-    () => debounce(fetchKeywordData, 1000),
-    []
-  )
+  useEffect(() => {
+    fetchKeywordData(debouncedInputText, 1, 10)
+  }, [debouncedInputText])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newKeyword = e.target.value
-    setInputText(prevKeyword => {
-      if (prevKeyword !== newKeyword) {
-        // debouncedFetchKeywordData(newKeyword)
-      }
-      return newKeyword
-    })
+    setInputText(e.target.value)
   }
 
   return (
@@ -97,8 +95,10 @@ const InputTodo = ({
           <FaSpinner className="spinner" />
         )}
       </form>
-      {isInputFocused && <RecommandKeyword />}
-      <button onClick={() => debouncedFetchKeywordData('lorem')}>TEST</button>
+      <RecommandKeyword keywordData={keywordData} keyword={inputText} />
+      {/* <button onClick={() => debouncedFetchKeywordData('q', 3, 30)}>
+        TEST
+      </button> */}
     </>
   )
 }
