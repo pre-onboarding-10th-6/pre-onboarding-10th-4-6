@@ -17,14 +17,15 @@ export const SearchDispatchContext = createContext<ContextDispatchProps>({
   setInput: () => null,
   setIsLoading: () => null,
   onFocusHandler: () => null,
-  onInputChangeHandler: () => null
+  onInputChangeHandler: () => null,
+  setResult: () => null
 })
 
 const SearchProvider = ({ children }: Props) => {
   const [input, setInput] = useState('')
+  const [result, setResult] = useState([''])
   const [isLoading, setIsLoading] = useState(false)
   const { isFocus, formRef, onFocusHandler } = useFocus()
-  const [result, setResult] = useState([''])
 
   const debounced = useDebouncer(
     async (curInput: string) => {
@@ -37,6 +38,7 @@ const SearchProvider = ({ children }: Props) => {
       try {
         setIsLoading(true)
         const res = await getSearch(`q=${curInput}`)
+        console.log(res.data.result)
         setResult(res.data.result.length ? res.data.result : [''])
       } catch (error) {
         console.error(error)
@@ -66,7 +68,8 @@ const SearchProvider = ({ children }: Props) => {
     setInput,
     setIsLoading,
     onFocusHandler,
-    onInputChangeHandler
+    onInputChangeHandler,
+    setResult
   }
 
   return (

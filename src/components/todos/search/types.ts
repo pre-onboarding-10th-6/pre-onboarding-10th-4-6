@@ -28,6 +28,7 @@ export interface ContextDispatchProps {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   onFocusHandler: (bool: boolean) => void
   onInputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
+  setResult: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export interface SearchResult {
