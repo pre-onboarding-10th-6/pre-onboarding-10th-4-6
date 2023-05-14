@@ -1,4 +1,4 @@
-import TodoItem from "./TodoItem";
+import TodoItem from './TodoItem'
 
 const TodoList = ({ todos, setTodos }) => {
   return todos.length ? (
@@ -9,6 +9,6 @@ const TodoList = ({ todos, setTodos }) => {
     </ul>
   ) : (
     <div className="empty-list">...</div>
-  );
-};
-export default TodoList;
+  )
+}
+export default TodoList

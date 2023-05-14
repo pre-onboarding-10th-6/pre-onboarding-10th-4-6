@@ -1,12 +1,12 @@
-import { useRef } from "react";
+import { useRef } from 'react'
 
 const useFocus = () => {
-  const ref = useRef();
+  const ref = useRef()
   const setFocus = () => {
-    ref.current && ref.current.focus();
-  };
+    ref.current && ref.current.focus()
+  }
 
-  return { ref, setFocus };
-};
+  return { ref, setFocus }
+}
 
-export default useFocus;
+export default useFocus
