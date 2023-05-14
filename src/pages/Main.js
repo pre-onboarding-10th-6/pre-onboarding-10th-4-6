@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
-import Header from "../components/Header";
-import InputTodo from "../components/InputTodo";
-import TodoList from "../components/TodoList";
-import { getTodoList } from "../api/todo";
+import { getTodoList } from '../api/todo'
+import Header from '../components/Header'
+import InputTodo from '../components/InputTodo'
+import TodoList from '../components/TodoList'
 
 const Main = () => {
-  const [todoListData, setTodoListData] = useState([]);
+  const [todoListData, setTodoListData] = useState([])
 
   useEffect(() => {
-    (async () => {
-      const { data } = await getTodoList();
-      setTodoListData(data || []);
-    })();
-  }, []);
+    ;(async () => {
+      const { data } = await getTodoList()
+      setTodoListData(data || [])
+    })()
+  }, [])
 
   return (
     <div className="container">
@@ -23,7 +23,7 @@ const Main = () => {
         <TodoList todos={todoListData} setTodos={setTodoListData} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Main;
+export default Main
