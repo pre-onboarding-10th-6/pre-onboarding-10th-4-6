@@ -28,7 +28,6 @@ export const getSearchData = async ({
   page,
   limit
 }: SearchParams): Promise<SearchResponse> => {
-  console.log('getSearchData called' + q + page + limit)
   try {
     let url = `${RESOURCE}?q=${q}`
     if (page) {
@@ -37,10 +36,8 @@ export const getSearchData = async ({
     if (limit) {
       url += `&limit=${limit}`
     }
-    console.log(url)
 
     const response = await apiRequest.get(url)
-    console.log(response)
 
     return response
   } catch (error) {

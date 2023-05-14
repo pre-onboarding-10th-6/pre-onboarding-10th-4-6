@@ -96,9 +96,6 @@ const InputTodo = ({
         )}
       </form>
       <RecommandKeyword keywordData={keywordData} keyword={inputText} />
-      {/* <button onClick={() => debouncedFetchKeywordData('q', 3, 30)}>
-        TEST
-      </button> */}
     </>
   )
 }

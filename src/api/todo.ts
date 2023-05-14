@@ -14,8 +14,6 @@ export const getTodoList = async () => {
 }
 
 export const createTodo = async (data: { title: string }): Promise<Todo> => {
-  console.log('createTodo')
-
   try {
     const response = await apiRequest.post(`${RESOURCE}`, JSON.stringify(data))
 
