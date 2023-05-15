@@ -7,7 +7,7 @@ import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { Todo } from '../pages/Main'
 
-import RecommandKeyword from './RecommandKeyword'
+import RecommandKeywordList from './RecommandKeywordList'
 
 const InputTodo = ({
   setTodos
@@ -18,7 +18,6 @@ const InputTodo = ({
   const debouncedInputText = useDebounce(inputText, 2000)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [keywordData, setKeywordData] = useState<SearchData | null>(null)
-  const [isInputFocused, setIsInputFocused] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
 
   useEffect(() => {
@@ -55,19 +54,23 @@ const InputTodo = ({
 
   const fetchKeywordData = async (
     keyword: string,
-    page: number,
-    limit: number
+    page?: number,
+    limit?: number
   ) => {
     if (keyword.trim() === '') {
       return
     }
-    const data = await getSearchData({ q: keyword, page: page, limit: limit })
-    console.log(data.data)
-    setKeywordData(data.data)
+    const { data } = await getSearchData({
+      q: keyword,
+      page: page,
+      limit: limit
+    })
+    console.log(data)
+    setKeywordData(data)
   }
 
   useEffect(() => {
-    fetchKeywordData(debouncedInputText, 1, 10)
+    fetchKeywordData(debouncedInputText)
   }, [debouncedInputText])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,8 +87,6 @@ const InputTodo = ({
           value={inputText}
           onChange={handleInputChange}
           disabled={isLoading}
-          onFocus={() => setIsInputFocused(true)}
-          onBlur={() => setIsInputFocused(false)}
         />
         {!isLoading ? (
           <button className="input-submit" type="submit">
@@ -95,7 +96,11 @@ const InputTodo = ({
           <FaSpinner className="spinner" />
         )}
       </form>
-      <RecommandKeyword keywordData={keywordData} keyword={inputText} />
+      <RecommandKeywordList
+        keywordData={keywordData}
+        keyword={inputText}
+        isLoading={isLoading}
+      />
     </>
   )
 }
