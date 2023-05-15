@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { getSuggestion } from '../api/suggestion'
 import { createTodo } from '../api/todo'
 import useCloseDropdown from '../hooks/useCloseDropDown'
+import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { StSpinner } from '../styles/common'
 import { ITodo } from '../types/todo'
@@ -19,25 +20,45 @@ const InputTodo = ({ setTodos }: IProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
   const [isOpenDropdown, dropdownRef, dropdownHandler] = useCloseDropdown(false)
+  const debounceInput = useDebounce(inputText)
 
   useEffect(() => {
     setFocus()
   }, [setFocus])
+
+  const getSuggestList = useCallback(async () => {
+    if (debounceInput === '') {
+      setSuggestList(undefined)
+      return
+    }
+    try {
+      const { data } = await getSuggestion({ q: debounceInput })
+      const { result } = data
+      setSuggestList(result)
+      if (!isOpenDropdown) {
+        dropdownHandler()
+      }
+    } catch (error) {
+      console.error(error)
+      setSuggestList(undefined)
+    }
+  }, [debounceInput])
+
+  useEffect(() => {
+    getSuggestList()
+  }, [getSuggestList])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       try {
         e.preventDefault()
         setIsLoading(true)
-
         const trimmed = inputText.trim()
         if (!trimmed) {
           return alert('Please write something')
         }
-
         const newItem = { title: trimmed }
         const { data } = await createTodo(newItem)
-
         if (data) {
           return setTodos(prev => [...prev, data])
         }
@@ -52,23 +73,8 @@ const InputTodo = ({ setTodos }: IProps) => {
     [inputText, setTodos]
   )
 
-  const onChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value)
-    if (e.target.value === '') {
-      setSuggestList(undefined)
-      return
-    }
-    try {
-      const { data } = await getSuggestion({ q: e.target.value })
-      const { result } = data
-      setSuggestList(result)
-      if (!isOpenDropdown) {
-        dropdownHandler()
-      }
-    } catch (error) {
-      console.error(error)
-      setSuggestList(undefined)
-    }
   }
 
   return (
