@@ -3,9 +3,13 @@ import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
 import { createTodo } from '../api/todo'
 import useFocus from '../hooks/useFocus'
+import useInput from '../hooks/useInput'
+
+import SearchContents from './SearchContents'
 
 const InputTodo = ({ setTodos }) => {
-  const [inputText, setInputText] = useState('')
+  const { values, setValues, handleChange } = useInput('')
+  const [isFocused, setIsFocused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { ref, setFocus } = useFocus()
 
@@ -19,7 +23,7 @@ const InputTodo = ({ setTodos }) => {
         e.preventDefault()
         setIsLoading(true)
 
-        const trimmed = inputText.trim()
+        const trimmed = values.trim()
         if (!trimmed) {
           return alert('Please write something')
         }
@@ -34,11 +38,12 @@ const InputTodo = ({ setTodos }) => {
         console.error(error)
         alert('Something went wrong.')
       } finally {
-        setInputText('')
+        setValues('')
         setIsLoading(false)
+        setFocus()
       }
     },
-    [inputText, setTodos]
+    [values, setTodos, setValues]
   )
 
   return (
@@ -46,9 +51,11 @@ const InputTodo = ({ setTodos }) => {
       <input
         className="input-text"
         placeholder="Add new todo..."
+        value={values}
         ref={ref}
-        value={inputText}
-        onChange={e => setInputText(e.target.value)}
+        onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         disabled={isLoading}
       />
       {!isLoading ? (
@@ -58,6 +65,7 @@ const InputTodo = ({ setTodos }) => {
       ) : (
         <FaSpinner className="spinner" />
       )}
+      {isFocused && <SearchContents values={values} />}
     </form>
   )
 }
