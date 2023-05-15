@@ -8,12 +8,12 @@ import { SearchBarProps, SearchProps } from './types'
 
 const Search = ({ children, setTodos }: SearchProps) => {
   const { input, formRef } = useContext(SearchContext)
-  const { setIsLoading, setInput } = useContext(SearchDispatchContext)
+  const { setIsSearchLoading, setInput } = useContext(SearchDispatchContext)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault()
-      setIsLoading(true)
+      setIsSearchLoading(true)
 
       const trimmed = input.trim()
       if (!trimmed) {
@@ -31,7 +31,7 @@ const Search = ({ children, setTodos }: SearchProps) => {
       alert('Something went wrong.')
     } finally {
       setInput('')
-      setIsLoading(false)
+      setIsSearchLoading(false)
     }
   }
 
@@ -43,7 +43,7 @@ const Search = ({ children, setTodos }: SearchProps) => {
 }
 
 Search.SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
-  const { input, isLoading } = useContext(SearchContext)
+  const { input, isSearchLoading } = useContext(SearchContext)
   const { onFocusHandler, onInputChangeHandler } = useContext(
     SearchDispatchContext
   )
@@ -53,14 +53,14 @@ Search.SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
   return (
     <S.SearchBox>
       {LeftIcon}
-      <input
+      <S.Input
         placeholder="todo를 추가하세요"
         type="text"
         onChange={onInputChangeHandler}
         onFocus={onFocus}
         value={input}
       />
-      {isLoading && rightIcon}
+      {isSearchLoading && rightIcon}
     </S.SearchBox>
   )
 }

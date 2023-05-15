@@ -1,6 +1,8 @@
-import { useContext } from 'react'
+import { Fragment, useContext, useRef } from 'react'
 
+import { getSearch } from '../../../../api/search'
 import { createTodo } from '../../../../api/todo'
+import useInfiniteScroll from '../../../../hooks/useInfiniteScroll'
 import { Todo } from '../../list/types'
 import { SearchContext, SearchDispatchContext } from '../context'
 
@@ -13,7 +15,11 @@ const highlightSearchText = (text: string, query: string): JSX.Element => {
   return (
     <span>
       {parts.map((part, i) =>
-        regex.test(part) ? <mark key={i}>{part}</mark> : <>{part}</>
+        regex.test(part) ? (
+          <mark key={i}>{part}</mark>
+        ) : (
+          <Fragment key={i}>{part}</Fragment>
+        )
       )}
     </span>
   )
@@ -24,10 +30,30 @@ interface Props {
 }
 
 const Dropdown = ({ setTodos }: Props) => {
-  const { isFocus, input, result, isLoading } = useContext(SearchContext)
-  const { setInput, onFocusHandler, setResult } = useContext(
-    SearchDispatchContext
-  )
+  const {
+    isFocus,
+    input,
+    result,
+    isSearchLoading,
+    dropdownStatus,
+    dropdownPage
+  } = useContext(SearchContext)
+  const {
+    setInput,
+    onFocusHandler,
+    setResult,
+    setDropdownStatus,
+    callSearchAPI
+  } = useContext(SearchDispatchContext)
+
+  const { targetRef, isIntersecting } = useInfiniteScroll(async ([entry]) => {
+    console.log(dropdownStatus)
+    if (entry.isIntersecting && dropdownStatus === 'next') {
+      const page = dropdownPage !== null ? ++dropdownPage.current : 1
+      setDropdownStatus('loading')
+      await callSearchAPI(input, page)
+    }
+  })
 
   // search.tsx -> handleSubmit과 유사
   const onClickHandler = async (todo: string) => {
@@ -54,11 +80,17 @@ const Dropdown = ({ setTodos }: Props) => {
             일치하는 검색결과가 없습니다..
           </S.DropdownItem>
         ) : (
-          <S.DropdownItem key={idx} onClick={() => onClickHandler(todo)}>
-            {isLoading ? todo : highlightSearchText(todo, input)}
+          <S.DropdownItem
+            key={idx}
+            ref={targetRef}
+            onClick={() => onClickHandler(todo)}
+          >
+            {isSearchLoading ? todo : highlightSearchText(todo, input)}
           </S.DropdownItem>
         )
       )}
+      {result[0] !== '' && dropdownStatus === 'next' && <S.ThreeDots />}
+      {dropdownStatus === 'loading' && <S.Spinner className="spinner" />}
     </S.List>
   ) : (
     <></>

@@ -15,20 +15,26 @@ export interface SearchBarProps extends Props {
   rightIcon?: React.ReactNode
 }
 
+export type DropdownStatus = 'none' | 'next' | 'loading'
+
 export interface ContextProps {
   input: string
   result: string[]
-  isLoading: boolean
+  isSearchLoading: boolean
   isFocus: boolean
   formRef: React.RefObject<HTMLFormElement> | null
+  dropdownStatus: 'none' | 'next' | 'loading'
+  dropdownPage: React.MutableRefObject<number> | null
 }
 
 export interface ContextDispatchProps {
   setInput: React.Dispatch<React.SetStateAction<string>>
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSearchLoading: React.Dispatch<React.SetStateAction<boolean>>
   onFocusHandler: (bool: boolean) => void
   onInputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
   setResult: React.Dispatch<React.SetStateAction<string[]>>
+  setDropdownStatus: React.Dispatch<React.SetStateAction<DropdownStatus>>
+  callSearchAPI: (input: string, page: number) => Promise<void>
 }
 
 export interface SearchResult {

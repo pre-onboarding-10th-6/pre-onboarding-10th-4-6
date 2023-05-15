@@ -1,75 +1,115 @@
-import React, { useState, createContext } from 'react'
+import { AxiosResponse } from 'axios'
+import React, { useState, createContext, useRef } from 'react'
 
 import { getSearch } from '../../../api/search'
 import useDebouncer from '../../../hooks/useDebounce'
 import useFocus from '../../../hooks/useFocus'
 
-import { ContextProps, ContextDispatchProps, Props } from './types'
+import {
+  ContextProps,
+  ContextDispatchProps,
+  Props,
+  SearchResult,
+  DropdownStatus
+} from './types'
 
 export const SearchContext = createContext<ContextProps>({
   input: '',
   result: [''],
-  isLoading: false,
+  isSearchLoading: false,
   isFocus: false,
-  formRef: null
+  formRef: null,
+  dropdownStatus: 'none',
+  dropdownPage: null
 })
+
 export const SearchDispatchContext = createContext<ContextDispatchProps>({
   setInput: () => null,
-  setIsLoading: () => null,
+  setIsSearchLoading: () => null,
   onFocusHandler: () => null,
   onInputChangeHandler: () => null,
-  setResult: () => null
+  setResult: () => null,
+  setDropdownStatus: () => null,
+  callSearchAPI: () => {
+    return Promise.resolve()
+  }
 })
 
 const SearchProvider = ({ children }: Props) => {
+  // const [searchState, setSearchState] = useState({
+  //   input: '',
+  //   result: '',
+  //   isSearchLoading: false
+  //   isSearchFocus: false,
+  // })
   const [input, setInput] = useState('')
   const [result, setResult] = useState([''])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSearchLoading, setIsSearchLoading] = useState(false)
   const { isFocus, formRef, onFocusHandler } = useFocus()
+  const dropdownPage = useRef(1)
+  const [dropdownStatus, setDropdownStatus] = useState<DropdownStatus>('none')
+
+  const isNextExistChecker = (res: AxiosResponse<SearchResult, any>) => {
+    const total = res.data.total
+    const curLen = (res.data.page - 1) * res.data.limit + res.data.qty
+    console.log(`total: ${total}, curLen: ${curLen}`)
+    total - curLen > 0 ? setDropdownStatus('next') : setDropdownStatus('none')
+  }
+
+  const callSearchAPI = async (input: string, page: number) => {
+    try {
+      const res = await getSearch(`q=${input}&page=${page}`)
+      console.log(`curLength: ${result.length}`)
+      isNextExistChecker(res)
+      setResult(
+        res.data.result.length
+          ? [...result.filter(arr => arr !== ''), ...res.data.result]
+          : ['']
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   const debounced = useDebouncer(
     async (curInput: string) => {
       if (curInput === '') {
-        setResult([''])
-        setIsLoading(false)
+        setIsSearchLoading(false)
         return
       }
-
-      try {
-        setIsLoading(true)
-        const res = await getSearch(`q=${curInput}`)
-        console.log(res.data.result)
-        setResult(res.data.result.length ? res.data.result : [''])
-      } catch (error) {
-        console.error(error)
-        setResult([''])
-      } finally {
-        setIsLoading(false)
-      }
+      setIsSearchLoading(true)
+      await callSearchAPI(curInput, dropdownPage.current)
+      setIsSearchLoading(false)
     },
-    setIsLoading,
+    setIsSearchLoading,
     500
   )
 
   const onInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value)
+    setResult([''])
+    dropdownPage.current = 1
     debounced(e.target.value)
   }
 
   const contextValue = {
     input,
     result,
-    isLoading,
+    isSearchLoading,
     isFocus,
-    formRef
+    formRef,
+    dropdownStatus,
+    dropdownPage
   }
 
   const contextDispatchValue = {
     setInput,
-    setIsLoading,
+    setIsSearchLoading,
     onFocusHandler,
     onInputChangeHandler,
-    setResult
+    setResult,
+    setDropdownStatus,
+    callSearchAPI
   }
 
   return (

@@ -26,3 +26,5 @@ export const SearchBox = styled.div`
     }
   }
 `
+
+export const Input = styled.input``
