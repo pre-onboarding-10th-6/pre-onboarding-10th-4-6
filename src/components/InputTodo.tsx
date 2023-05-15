@@ -1,12 +1,55 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
+import { styled } from 'styled-components'
 
 import { createTodo, Todo } from '../api/todo'
+import searchIcon from '../assets/search_icon.png'
 import useFocus from '../hooks/useFocus'
+
+import Spinner from './Spinner'
 
 interface InputTodoProps {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
 }
+
+const InputTodoWrapper = styled.form`
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  border-radius: 6px;
+  border: 1px solid #dedede;
+  justify-content: space-evenly;
+  transition: border-width 0.3s ease-in-out;
+  align-items: center;
+  padding-right: 16px;
+  &:hover {
+    border-width: 3px;
+  }
+  &:active {
+    border: 1px solid #9f9f9f;
+  }
+  &:focus-within {
+    border: 1px solid #9f9f9f;
+  }
+`
+
+const InputStyle = styled.input`
+  font-size: 1rem;
+  font-weight: 400;
+  width: 100%;
+  padding: 12px 13px 12px 41px;
+  background-color: transparent;
+  border: none;
+  background: url(${searchIcon}) no-repeat left 16.33px center / 14.12px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  &:focus {
+    outline: none;
+  }
+`
+
+const InputSpinner = styled(Spinner)``
 
 const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [inputText, setInputText] = useState('')
@@ -46,23 +89,16 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
   )
 
   return (
-    <form className="form-container" onSubmit={handleSubmit}>
-      <input
-        className="input-text"
+    <InputTodoWrapper onSubmit={handleSubmit}>
+      <InputStyle
         placeholder="Add new todo..."
         ref={ref}
         value={inputText}
         onChange={e => setInputText(e.target.value)}
         disabled={isLoading}
       />
-      {!isLoading ? (
-        <button className="input-submit" type="submit">
-          <FaPlusCircle className="btn-plus" />
-        </button>
-      ) : (
-        <FaSpinner className="spinner" />
-      )}
-    </form>
+      {isLoading ? null : <InputSpinner />}
+    </InputTodoWrapper>
   )
 }
 
