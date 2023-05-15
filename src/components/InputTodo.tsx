@@ -1,8 +1,10 @@
-import { Dispatch, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle } from 'react-icons/fa'
 import styled from 'styled-components'
 
+import { getSuggestion } from '../api/suggestion'
 import { createTodo } from '../api/todo'
+import useCloseDropdown from '../hooks/useCloseDropDown'
 import useFocus from '../hooks/useFocus'
 import { StSpinner } from '../styles/common'
 import { ITodo } from '../types/todo'
@@ -13,8 +15,10 @@ interface IProps {
 
 const InputTodo = ({ setTodos }: IProps) => {
   const [inputText, setInputText] = useState<string>('')
+  const [suggestList, setSuggestList] = useState<string[]>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
+  const [isOpenDropdown, dropdownRef, dropdownHandler] = useCloseDropdown(false)
 
   useEffect(() => {
     setFocus()
@@ -48,23 +52,55 @@ const InputTodo = ({ setTodos }: IProps) => {
     [inputText, setTodos]
   )
 
+  const onChangeInput = async (e: ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value)
+    if (e.target.value === '') {
+      setSuggestList(undefined)
+      return
+    }
+    try {
+      const { data } = await getSuggestion({ q: e.target.value })
+      const { result } = data
+      setSuggestList(result)
+      if (!isOpenDropdown) {
+        dropdownHandler()
+      }
+    } catch (error) {
+      console.error(error)
+      setSuggestList(undefined)
+    }
+  }
+
   return (
-    <StFormContainer onSubmit={handleSubmit}>
-      <StInput
-        placeholder="Add new todo..."
-        ref={ref}
-        value={inputText}
-        onChange={e => setInputText(e.target.value)}
-        disabled={isLoading}
-      />
-      {!isLoading ? (
-        <StSubmitButton type="submit">
-          <StFaPlusCircle />
-        </StSubmitButton>
-      ) : (
-        <StSpinner />
+    <>
+      <StFormContainer onSubmit={handleSubmit}>
+        <StInput
+          placeholder="Add new todo..."
+          ref={ref}
+          value={inputText}
+          onChange={onChangeInput}
+          disabled={isLoading}
+        />
+        {!isLoading ? (
+          <StSubmitButton type="submit">
+            <StFaPlusCircle />
+          </StSubmitButton>
+        ) : (
+          <StSpinner />
+        )}
+      </StFormContainer>
+      {isOpenDropdown && (
+        <StSuggestListContainer
+          ref={dropdownRef as React.RefObject<HTMLDivElement>}
+        >
+          <ul>
+            {suggestList?.map(v => {
+              return <li key={v}>{v}</li>
+            })}
+          </ul>
+        </StSuggestListContainer>
       )}
-    </StFormContainer>
+    </>
   )
 }
 
@@ -108,4 +144,7 @@ const StSubmitButton = styled.button`
 const StFaPlusCircle = styled(FaPlusCircle)`
   color: darkcyan;
   font-size: 20px;
+`
+const StSuggestListContainer = styled.div`
+  width: 100%;
 `
