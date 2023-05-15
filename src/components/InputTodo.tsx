@@ -97,7 +97,7 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
         onChange={e => setInputText(e.target.value)}
         disabled={isLoading}
       />
-      {isLoading ? null : <InputSpinner />}
+      {isLoading ? <InputSpinner /> : null}
     </InputTodoWrapper>
   )
 }
