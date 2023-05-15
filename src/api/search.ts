@@ -1,4 +1,4 @@
-import { SearchResponse } from '../types/types'
+import { CommonResponse, SearchData } from '../types/types'
 
 import apiRequest from '.'
 
@@ -6,11 +6,14 @@ export const getSearchItemList = async (
   searchWord: string,
   page: number,
   limit: number
-): Promise<SearchResponse> => {
+): Promise<CommonResponse<SearchData>> => {
   try {
-    const response = await apiRequest.get<SearchResponse>('/search', {
-      params: { q: searchWord, page: page, limit: limit }
-    })
+    const response = await apiRequest.get<CommonResponse<SearchData>>(
+      '/search',
+      {
+        params: { q: searchWord, page: page, limit: limit }
+      }
+    )
 
     return response.data
   } catch (error) {

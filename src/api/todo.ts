@@ -1,18 +1,22 @@
+import { CommonResponse, TodoData } from '../types/types'
+
 import apiRequest from './index'
 
 const RESOURCE = '/todos'
 
-export const getTodoList = async () => {
+export const getTodoList = async (): Promise<CommonResponse<TodoData>> => {
   try {
-    const response = await apiRequest.get(`${RESOURCE}`)
-
-    return response
+    const response = await apiRequest.get<CommonResponse<TodoData>>(
+      `${RESOURCE}`
+    )
+    console.log(response.data)
+    return response.data
   } catch (error) {
     throw new Error('API getTodoList error')
   }
 }
 
-export const createTodo = async data => {
+export const createTodo = async (data: { title: string }) => {
   try {
     const response = await apiRequest.post(`${RESOURCE}`, data)
 
@@ -22,7 +26,7 @@ export const createTodo = async data => {
   }
 }
 
-export const deleteTodo = async id => {
+export const deleteTodo = async (id: any) => {
   try {
     const response = await apiRequest.delete(`${RESOURCE}/${id}`)
 
