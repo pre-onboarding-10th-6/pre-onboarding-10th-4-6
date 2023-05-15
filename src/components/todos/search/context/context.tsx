@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import React, { createContext, useContext, useRef, useReducer } from 'react'
+import { createContext, useContext, useRef, useReducer } from 'react'
 
 import { getSearch } from '../../../../api/search'
 import { createTodo } from '../../../../api/todo'
