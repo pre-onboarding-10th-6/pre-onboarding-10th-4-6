@@ -4,19 +4,26 @@ import apiRequest from './index'
 
 const RESOURCE = '/todos'
 
-export const getTodoList = async () => {
+export interface ApiResponse<T> {
+  opcode: number
+  message: string
+  data: T
+}
+
+export const getTodoList = async (): Promise<ApiResponse<Todo[]>> => {
   try {
-    const response = await apiRequest.get(`${RESOURCE}`)
+    const response = await apiRequest.get<Todo[]>(`${RESOURCE}`)
     return response
   } catch (error) {
     throw new Error('API getTodoList error')
   }
 }
 
-export const createTodo = async (data: { title: string }): Promise<Todo> => {
+export const createTodo = async (
+  data: Record<string, unknown>
+): Promise<ApiResponse<Todo>> => {
   try {
-    const response = await apiRequest.post(`${RESOURCE}`, JSON.stringify(data))
-
+    const response = await apiRequest.post<Todo>(`${RESOURCE}`, data)
     return response
   } catch (error) {
     throw new Error('API createTodo error')
