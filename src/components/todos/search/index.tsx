@@ -1,4 +1,4 @@
-import SearchProvider from './context'
+import SearchProvider from './context/context'
 import Dropdown from './dropdown/Dropdown'
 import Form from './form/Form'
 import SearchBar from './form/SearchBar'

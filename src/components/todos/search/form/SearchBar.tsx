@@ -1,12 +1,21 @@
-import { useSearchContext, useSearchDispatchContext } from '../context'
+import { useSearchContext, useSearchDispatchContext } from '../context/context'
+import { SEARCH_AT } from '../context/reducer'
 import * as S from '../style'
 import { SearchBarProps } from '../types'
 
 const SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
-  const { searchState, isSearchLoading } = useSearchContext()
-  const { onFocusHandler, onInputChangeHandler } = useSearchDispatchContext()
+  const { state, dropdownPage } = useSearchContext()
+  const { debounced, dispatch } = useSearchDispatchContext()
 
-  const onFocus = () => onFocusHandler(true)
+  const onFocus = () => dispatch({ type: SEARCH_AT.SET_FOCUS, payload: true })
+  const onInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: SEARCH_AT.SET_SEARCH,
+      payload: { input: e.target.value, result: [''] }
+    })
+    dropdownPage.current = 1
+    debounced(e.target.value)
+  }
 
   return (
     <S.SearchBox>
@@ -16,9 +25,9 @@ const SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
         type="text"
         onChange={onInputChangeHandler}
         onFocus={onFocus}
-        value={searchState.input}
+        value={state.input}
       />
-      {isSearchLoading && rightIcon}
+      {state.isSearchLoading && rightIcon}
     </S.SearchBox>
   )
 }

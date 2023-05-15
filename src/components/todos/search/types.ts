@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Todo } from '../list/types'
 
+import { SearchReducerAction, SearchReducerState } from './context/reducer'
+
 export interface Props {
   children?: React.ReactNode
 }
@@ -17,28 +19,17 @@ export interface SearchBarProps extends Props {
 
 export type DropdownStatus = 'none' | 'next' | 'loading'
 
-interface SearchState {
-  input: string
-  result: string[]
-}
-
 export interface ContextProps {
-  searchState: SearchState
-  isSearchLoading: boolean
-  isFocus: boolean
-  formRef: React.RefObject<HTMLFormElement> | null
-  dropdownStatus: 'none' | 'next' | 'loading'
-  dropdownPage: React.MutableRefObject<number> | null
+  state: SearchReducerState
+  formRef: React.RefObject<HTMLFormElement>
+  dropdownPage: React.MutableRefObject<number>
 }
 
 export interface ContextDispatchProps {
-  setSearchState: React.Dispatch<React.SetStateAction<SearchState>>
-  setIsSearchLoading: React.Dispatch<React.SetStateAction<boolean>>
-  onFocusHandler: (bool: boolean) => void
-  onInputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
-  setDropdownStatus: React.Dispatch<React.SetStateAction<DropdownStatus>>
+  debounced: (str: string) => void
   callSearchAPI: (input: string, page: number) => Promise<void>
   callCreateTodoAPI: (title: string) => Promise<void>
+  dispatch: React.Dispatch<SearchReducerAction>
 }
 
 export interface SearchResult {
@@ -48,4 +39,11 @@ export interface SearchResult {
   result: string[]
   qty: number
   total: number
+}
+
+export interface DropdownItemProps {
+  todo: string
+  isSearchLoading: boolean
+  input: string
+  onClickHandler: (todo: string) => void
 }

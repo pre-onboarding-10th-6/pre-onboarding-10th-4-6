@@ -1,25 +1,26 @@
 import React from 'react'
 
-import { useSearchContext, useSearchDispatchContext } from '../context'
+import { useSearchContext, useSearchDispatchContext } from '../context/context'
+import { SEARCH_AT } from '../context/reducer'
 import * as S from '../style'
 import { Props } from '../types'
 
 const Form = ({ children }: Props) => {
-  const { searchState, formRef } = useSearchContext()
-  const { setSearchState, callCreateTodoAPI } = useSearchDispatchContext()
+  const { state, formRef } = useSearchContext()
+  const { dispatch, callCreateTodoAPI } = useSearchDispatchContext()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const trimmed = searchState.input.trim()
+    const trimmed = state.input.trim()
     if (!trimmed) {
       return alert('Please write something')
     }
 
     await callCreateTodoAPI(trimmed)
-    setSearchState(prev => ({
-      input: '',
-      result: prev.result
-    }))
+    dispatch({
+      type: SEARCH_AT.SET_SEARCH,
+      payload: { input: '', result: state.result }
+    })
   }
 
   return (

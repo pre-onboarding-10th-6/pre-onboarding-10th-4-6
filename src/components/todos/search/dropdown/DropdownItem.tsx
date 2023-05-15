@@ -1,13 +1,8 @@
 import { Fragment, forwardRef } from 'react'
 
 import * as S from '../style'
+import { DropdownItemProps } from '../types'
 
-interface DropdownItemProps {
-  todo: string
-  isSearchLoading: boolean
-  input: string
-  onClickHandler: (todo: string) => void
-}
 const highlightSearchText = (text: string, query: string): JSX.Element => {
   const regex = new RegExp(`(${query})`, 'gi')
   const parts = text.split(regex)

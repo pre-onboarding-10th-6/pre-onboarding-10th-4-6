@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 function useDebouncer<T extends any[]>(
   callback: (...args: T) => Promise<void>,
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  dispatch: (bool: boolean) => void,
   delay: number
 ) {
   const timeoutRef = useRef<NodeJS.Timeout>()
@@ -10,9 +10,9 @@ function useDebouncer<T extends any[]>(
   return useCallback(
     (...args: T) => {
       clearTimeout(timeoutRef.current)
-      setIsLoading(true)
+      dispatch(true)
       timeoutRef.current = setTimeout(() => {
-        callback(...args).finally(() => setIsLoading(false))
+        callback(...args).finally(() => dispatch(false))
       }, delay)
     },
     [callback, delay]

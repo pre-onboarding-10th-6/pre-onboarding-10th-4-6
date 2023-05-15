@@ -1,61 +1,54 @@
 import useInfiniteScroll from '../../../../hooks/useInfiniteScroll'
-import { useSearchContext, useSearchDispatchContext } from '../context'
+import { useSearchContext, useSearchDispatchContext } from '../context/context'
+import { SEARCH_AT } from '../context/reducer'
 import * as S from '../style'
 
 import DropdownItem from './DropdownItem'
 
 const Dropdown = () => {
-  const {
-    isFocus,
-    searchState,
-    isSearchLoading,
-    dropdownStatus,
-    dropdownPage
-  } = useSearchContext()
-  const {
-    onFocusHandler,
-    setSearchState,
-    setDropdownStatus,
-    callSearchAPI,
-    callCreateTodoAPI
-  } = useSearchDispatchContext()
+  const { state, dropdownPage } = useSearchContext()
+  const { dispatch, callSearchAPI, callCreateTodoAPI } =
+    useSearchDispatchContext()
 
   const { targetRef } = useInfiniteScroll(async ([entry]) => {
-    if (entry.isIntersecting && dropdownStatus === 'next') {
+    if (entry.isIntersecting && state.dropdownStatus === 'next') {
       const page = dropdownPage !== null ? ++dropdownPage.current : 1
-      setDropdownStatus('loading')
-      await callSearchAPI(searchState.input, page)
+      dispatch({ type: SEARCH_AT.SET_DROPDOWN_STATUS, payload: 'loading' })
+      await callSearchAPI(state.input, page)
     }
   })
 
   const onClickHandler = async (todo: string) => {
-    onFocusHandler(false)
+    dispatch({ type: SEARCH_AT.SET_FOCUS, payload: false })
     await callCreateTodoAPI(todo)
-    setSearchState({
-      input: '',
-      result: ['']
+    dispatch({
+      type: SEARCH_AT.SET_SEARCH,
+      payload: { input: '', result: [''] }
     })
+    alert('선택한 Todo가 생성되었습니다')
   }
 
   const DropdownIcon = () => {
     return (
       <>
-        {searchState.result[0] !== '' && dropdownStatus === 'next' && (
+        {state.result[0] !== '' && state.dropdownStatus === 'next' && (
           <S.ThreeDots />
         )}
-        {dropdownStatus === 'loading' && <S.Spinner className="spinner" />}
+        {state.dropdownStatus === 'loading' && (
+          <S.Spinner className="spinner" />
+        )}
       </>
     )
   }
 
-  return isFocus ? (
+  return state.isFocus ? (
     <S.List>
-      {searchState.result.map((todo, idx) => (
+      {state.result.map((todo, idx) => (
         <DropdownItem
           key={idx}
           todo={todo}
-          isSearchLoading={isSearchLoading}
-          input={searchState.input}
+          isSearchLoading={state.isSearchLoading}
+          input={state.input}
           onClickHandler={onClickHandler}
           ref={targetRef}
         />
