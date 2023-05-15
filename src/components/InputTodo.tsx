@@ -10,6 +10,8 @@ import useFocus from '../hooks/useFocus'
 import { StSpinner } from '../styles/common'
 import { ITodo } from '../types/todo'
 
+import SuggestList from './suggestList'
+
 interface IProps {
   setTodos: Dispatch<React.SetStateAction<ITodo[]>>
 }
@@ -96,15 +98,10 @@ const InputTodo = ({ setTodos }: IProps) => {
         )}
       </StFormContainer>
       {isOpenDropdown && (
-        <StSuggestListContainer
-          ref={dropdownRef as React.RefObject<HTMLDivElement>}
-        >
-          <ul>
-            {suggestList?.map(v => {
-              return <li key={v}>{v}</li>
-            })}
-          </ul>
-        </StSuggestListContainer>
+        <SuggestList
+          suggestList={suggestList}
+          dropdownRef={dropdownRef as React.RefObject<HTMLDivElement>}
+        />
       )}
     </>
   )
@@ -114,7 +111,7 @@ export default InputTodo
 
 const StFormContainer = styled.form`
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   display: flex;
   border-radius: calc(0.5 * 100px);
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
@@ -150,7 +147,4 @@ const StSubmitButton = styled.button`
 const StFaPlusCircle = styled(FaPlusCircle)`
   color: darkcyan;
   font-size: 20px;
-`
-const StSuggestListContainer = styled.div`
-  width: 100%;
 `
