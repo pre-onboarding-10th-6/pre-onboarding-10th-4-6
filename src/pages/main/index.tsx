@@ -7,8 +7,6 @@ import Header from '../../components/Header'
 import TodoList from '../../components/todos/list'
 import { Todo } from '../../components/todos/list/types'
 import Search from '../../components/todos/search'
-import SearchProvider from '../../components/todos/search/context'
-import Dropdown from '../../components/todos/search/dropdown'
 
 const Main = () => {
   const [todoListData, setTodoListData] = useState<Todo[]>([])
@@ -24,16 +22,15 @@ const Main = () => {
     <div className="container">
       <div className="inner">
         <Header />
-        <SearchProvider>
-          <Search setTodos={setTodoListData}>
+        <Search setTodos={setTodoListData}>
+          <Search.Form>
             <Search.SearchBar
               LeftIcon={<BiSearch />}
               rightIcon={<FaSpinner className="spinner" />}
             />
-            <Dropdown />
-          </Search>
-        </SearchProvider>
-
+            <Search.Dropdown />
+          </Search.Form>
+        </Search>
         <TodoList todos={todoListData} setTodos={setTodoListData} />
       </div>
     </div>

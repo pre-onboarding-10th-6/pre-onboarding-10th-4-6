@@ -1,19 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
-const useClickOutside = () => {
+const useFocus = (dispatch: (bool: boolean) => void) => {
   const ref = useRef<HTMLFormElement>(null)
-  const [isFocus, setIsFocus] = useState(false)
-
-  const onFocusHandler = (bool: boolean) => {
-    setIsFocus(bool)
-  }
 
   useEffect(() => {
     const listener = (e: MouseEvent) => {
       if (!ref.current || ref.current.contains(e.target as Node)) {
         return
       }
-      onFocusHandler(false)
+      dispatch(false)
     }
     document.addEventListener('mousedown', listener)
 
@@ -22,7 +17,7 @@ const useClickOutside = () => {
     }
   }, [ref])
 
-  return { formRef: ref, isFocus, onFocusHandler }
+  return { formRef: ref }
 }
 
-export default useClickOutside
+export default useFocus

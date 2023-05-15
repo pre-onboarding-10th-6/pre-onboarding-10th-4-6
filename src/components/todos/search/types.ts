@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Todo } from '../list/types'
 
+import { SearchReducerAction, SearchReducerState } from './context/reducer'
+
 export interface Props {
   children?: React.ReactNode
 }
@@ -15,19 +17,19 @@ export interface SearchBarProps extends Props {
   rightIcon?: React.ReactNode
 }
 
+export type DropdownStatus = 'none' | 'next' | 'loading'
+
 export interface ContextProps {
-  input: string
-  result: string[]
-  isLoading: boolean
-  isFocus: boolean
-  formRef: React.RefObject<HTMLFormElement> | null
+  state: SearchReducerState
+  formRef: React.RefObject<HTMLFormElement>
+  dropdownPage: React.MutableRefObject<number>
 }
 
 export interface ContextDispatchProps {
-  setInput: React.Dispatch<React.SetStateAction<string>>
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
-  onFocusHandler: (bool: boolean) => void
-  onInputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
+  debounced: (str: string) => void
+  callSearchAPI: (input: string, page: number) => Promise<void>
+  callCreateTodoAPI: (title: string) => Promise<void>
+  dispatch: React.Dispatch<SearchReducerAction>
 }
 
 export interface SearchResult {
@@ -37,4 +39,11 @@ export interface SearchResult {
   result: string[]
   qty: number
   total: number
+}
+
+export interface DropdownItemProps {
+  todo: string
+  isSearchLoading: boolean
+  input: string
+  onClickHandler: (todo: string) => void
 }
