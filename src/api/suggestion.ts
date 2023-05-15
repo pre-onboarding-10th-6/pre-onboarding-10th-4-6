@@ -1,5 +1,3 @@
-import { URLSearchParams } from 'url'
-
 import { AxiosResponse } from 'axios'
 
 import { ISuggestionReq, ISuggestionRes } from '../types/suggestion'
@@ -11,16 +9,17 @@ export const getSuggestion = async ({
   q,
   page,
   limit
-}: ISuggestionReq): Promise<AxiosResponse<ISuggestionRes[]>> => {
-  const params = new URLSearchParams({ q })
+}: ISuggestionReq): Promise<AxiosResponse<ISuggestionRes>> => {
+  const queryParts = [`q=${q}`]
   if (page) {
-    params.append('page', page.toString())
+    queryParts.push(`page=${page.toString()}`)
   }
   if (limit) {
-    params.append('limit', limit.toString())
+    queryParts.push(`limit=${limit.toString()}`)
   }
+  const query = queryParts.join('&')
   try {
-    const response = await apiRequest.get(`${RESOURCE}?${params}`)
+    const response = await apiRequest.get(`${RESOURCE}?${query}`)
     return response
   } catch (error) {
     throw new Error('API getSuggestion error')
