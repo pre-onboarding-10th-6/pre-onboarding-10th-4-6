@@ -1,0 +1,22 @@
+{
+  "opcode": 200,
+  "message": "OK",
+  "data": {
+    "q": "lorem",
+    "result": [
+      "Cras ac risus id lorem tincidunt imperdiet.",
+      "Morbi sodales lorem et lacus imperdiet, non tempus lacus commodo.",
+      "Nam a purus gravida, pulvinar lorem a, accumsan tellus.",
+      "Aenean congue lorem at congue egestas.",
+      "Nunc eu arcu a lorem facilisis faucibus ac quis diam.",
+      "Donec porttitor enim ac lorem suscipit, tempor tempus sapien egestas.",
+      "Morbi maximus magna non lorem laoreet, ut hendrerit sem aliquam.",
+      "Etiam et lorem sed felis suscipit tristique.",
+      "In accumsan lorem vel ante elementum facilisis."
+    ],
+    "qty": 9,
+    "total": 19,
+    "page": 2,
+    "limit": 10
+  }
+}
