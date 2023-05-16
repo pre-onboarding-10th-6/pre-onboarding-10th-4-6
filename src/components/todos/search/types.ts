@@ -21,12 +21,10 @@ export type DropdownStatus = 'none' | 'next' | 'loading'
 
 export interface ContextProps {
   state: SearchReducerState
-  formRef: React.RefObject<HTMLFormElement>
   dropdownPage: React.MutableRefObject<number>
 }
 
 export interface ContextDispatchProps {
-  debounced: (str: string) => void
   callSearchAPI: (input: string, page: number) => Promise<void>
   callCreateTodoAPI: (title: string) => Promise<void>
   dispatch: React.Dispatch<SearchReducerAction>

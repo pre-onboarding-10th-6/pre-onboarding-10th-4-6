@@ -1,7 +1,7 @@
 import { DropdownStatus } from '../types'
 
 export const SEARCH_AT = {
-  SEARCH: 'SEARCH',
+  SEARCH_WITH_DROPDOWN: 'SEARCH_WITH_DROPDOWN',
   SET_SEARCH: 'SET_SEARCH',
   SET_SEARCH_LOADING: 'SET_SEARCH_LOADING',
   SET_DROPDOWN_STATUS: 'SET_DROPDOWN_STATUS',
@@ -17,7 +17,10 @@ export interface SearchReducerState {
 }
 
 export type SearchReducerAction =
-  | { type: typeof SEARCH_AT.SEARCH; payload: string[] }
+  | {
+      type: typeof SEARCH_AT.SEARCH_WITH_DROPDOWN
+      payload: { result: string[]; isNextExist: boolean }
+    }
   | {
       type: typeof SEARCH_AT.SET_SEARCH
       payload: { input: string; result: string[] }
@@ -34,12 +37,18 @@ const searchReducer = (
   action: SearchReducerAction
 ) => {
   switch (action.type) {
-    case SEARCH_AT.SEARCH:
+    case SEARCH_AT.SEARCH_WITH_DROPDOWN:
       return {
         ...state,
         input: state.input,
-        result: action.payload.length
-          ? [...state.result.filter(arr => arr !== ''), ...action.payload]
+        dropdownStatus: action.payload.isNextExist
+          ? ('next' as DropdownStatus)
+          : ('none' as DropdownStatus),
+        result: action.payload.result.length
+          ? [
+              ...state.result.filter(arr => arr !== ''),
+              ...action.payload.result
+            ]
           : ['']
       }
     case SEARCH_AT.SET_SEARCH:

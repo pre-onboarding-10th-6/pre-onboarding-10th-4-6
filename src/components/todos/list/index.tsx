@@ -1,20 +1,17 @@
+import TodoButton from './TodoButton'
 import TodoItem from './TodoItem'
-import { Todo } from './types'
+import TodoList from './TodoList'
 
 interface Props {
-  todos: Todo[]
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
+  children: React.ReactNode
 }
 
-const TodoList = ({ todos, setTodos }: Props) => {
-  return todos.length ? (
-    <ul>
-      {todos.map(({ id, title }) => (
-        <TodoItem key={id} id={id} title={title} setTodos={setTodos} />
-      ))}
-    </ul>
-  ) : (
-    <div className="empty-list">...</div>
-  )
+const Todo = ({ children }: Props) => {
+  return <>{children}</>
 }
-export default TodoList
+
+Todo.List = TodoList
+Todo.Item = TodoItem
+Todo.ItemButton = TodoButton
+
+export default Todo

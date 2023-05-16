@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 type IntersectionObserverCallback = (
   entries: IntersectionObserverEntry[]
@@ -12,17 +12,17 @@ const options: IntersectionObserverInit = {
 
 const useInfiniteScroll = (callback: IntersectionObserverCallback) => {
   const targetRef = useRef<HTMLLIElement>(null)
-  const [isIntersecting, setIsIntersecting] = useState(false)
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
-      setIsIntersecting(entry.isIntersecting)
+      // 최초 등록시, 그리고 가시성에 변화가 생길시 콜백 함수가 호출됨
       if (entry.isIntersecting) {
         callback([entry])
       }
     }, options)
 
     if (targetRef.current) {
+      // 관찰을 시작하면 위 if문에 의해 entry가 교차할 때 callback을 호출
       observer.observe(targetRef.current)
     }
 
@@ -33,7 +33,7 @@ const useInfiniteScroll = (callback: IntersectionObserverCallback) => {
     }
   }, [callback])
 
-  return { targetRef, isIntersecting }
+  return { targetRef }
 }
 
 export default useInfiniteScroll
