@@ -19,17 +19,22 @@ describe('searchReducer', () => {
 
   test('handles SEARCH action with non-empty payload', () => {
     const action: SearchReducerAction = {
-      type: SEARCH_AT.SEARCH,
-      payload: ['result1', 'result2']
+      type: SEARCH_AT.SEARCH_WITH_DROPDOWN,
+      payload: { result: ['result1', 'result2'], isNextExist: true }
     }
     const newState = searchReducer(initialState, action)
     expect(newState.result).toEqual(['result1', 'result2'])
+    expect(newState.dropdownStatus).toEqual('next')
   })
 
   test('handles SEARCH action with empty payload', () => {
-    const action: SearchReducerAction = { type: SEARCH_AT.SEARCH, payload: [] }
+    const action: SearchReducerAction = {
+      type: SEARCH_AT.SEARCH_WITH_DROPDOWN,
+      payload: { result: [], isNextExist: false }
+    }
     const newState = searchReducer(initialState, action)
     expect(newState.result).toEqual([''])
+    expect(newState.dropdownStatus).toEqual('none')
   })
 
   test('handles SET_SEARCH action', () => {

@@ -1,10 +1,7 @@
-import { AxiosResponse } from 'axios'
 import { createContext, useContext, useRef, useReducer } from 'react'
 
 import { getSearch } from '../../../../api/search'
 import { createTodo } from '../../../../api/todo'
-import useDebouncer from '../../../../hooks/useDebounce'
-import useFocus from '../../../../hooks/useFocus'
 import {
   ContextProps,
   ContextDispatchProps,
@@ -25,27 +22,22 @@ const initialState: SearchReducerState = {
   isFocus: false
 }
 
+const isNextExistChecker = (data: SearchResult) => {
+  const total = data.total
+  const curLen = (data.page - 1) * data.limit + data.qty
+  return total - curLen > 0
+}
+
 const SearchProvider = ({ children, setTodos }: SearchProps) => {
   const [state, dispatch] = useReducer(searchReducer, initialState)
   const dropdownPage = useRef(1)
-  const { formRef } = useFocus((bool: boolean) =>
-    dispatch({ type: SEARCH_AT.SET_FOCUS, payload: bool })
-  )
-
-  const isNextExistChecker = (res: AxiosResponse<SearchResult, any>) => {
-    const total = res.data.total
-    const curLen = (res.data.page - 1) * res.data.limit + res.data.qty
-    console.log(`total: ${total}, curLen: ${curLen}`)
-    total - curLen > 0
-      ? dispatch({ type: SEARCH_AT.SET_DROPDOWN_STATUS, payload: 'next' })
-      : dispatch({ type: SEARCH_AT.SET_DROPDOWN_STATUS, payload: 'none' })
-  }
 
   const callSearchAPI = async (input: string, page: number) => {
-    const res = await getSearch(`q=${input}&page=${page}`)
-    console.log(`curLength: ${state.result.length}`)
-    isNextExistChecker(res)
-    dispatch({ type: SEARCH_AT.SEARCH, payload: res.data.result })
+    const { data } = await getSearch(`q=${input}&page=${page}`)
+    dispatch({
+      type: SEARCH_AT.SEARCH_WITH_DROPDOWN,
+      payload: { result: data.result, isNextExist: isNextExistChecker(data) }
+    })
   }
 
   const callCreateTodoAPI = async (title: string) => {
@@ -55,24 +47,10 @@ const SearchProvider = ({ children, setTodos }: SearchProps) => {
     dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: false })
   }
 
-  const debounced = useDebouncer(
-    async (curInput: string) => {
-      if (curInput === '') {
-        dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: false })
-        return
-      }
-      await callSearchAPI(curInput, dropdownPage.current)
-    },
-    (bool: boolean) =>
-      dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: bool }),
-    500
-  )
-
   return (
-    <SearchContext.Provider value={{ formRef, dropdownPage, state }}>
+    <SearchContext.Provider value={{ dropdownPage, state }}>
       <SearchDispatchContext.Provider
         value={{
-          debounced,
           callSearchAPI,
           callCreateTodoAPI,
           dispatch

@@ -1,3 +1,4 @@
+import useDebouncer from '../../../../hooks/useDebounce'
 import { useSearchContext, useSearchDispatchContext } from '../context/context'
 import { SEARCH_AT } from '../context/reducer'
 import * as S from '../style'
@@ -5,7 +6,20 @@ import { SearchBarProps } from '../types'
 
 const SearchBar = ({ LeftIcon, rightIcon }: SearchBarProps) => {
   const { state, dropdownPage } = useSearchContext()
-  const { debounced, dispatch } = useSearchDispatchContext()
+  const { dispatch, callSearchAPI } = useSearchDispatchContext()
+
+  const debounced = useDebouncer(
+    async (curInput: string) => {
+      if (curInput === '') {
+        dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: false })
+        return
+      }
+      await callSearchAPI(curInput, dropdownPage.current)
+    },
+    (bool: boolean) =>
+      dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: bool }),
+    500
+  )
 
   const onFocus = () => dispatch({ type: SEARCH_AT.SET_FOCUS, payload: true })
   const onInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

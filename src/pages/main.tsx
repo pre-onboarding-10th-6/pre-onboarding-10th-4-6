@@ -13,8 +13,12 @@ const Main = () => {
 
   useEffect(() => {
     const fetchTodoList = async () => {
-      const { data } = await getTodoList()
-      setTodoListData(data || [])
+      try {
+        const { data } = await getTodoList()
+        setTodoListData(data || [])
+      } catch (error) {
+        console.log('error in main')
+      }
     }
     fetchTodoList()
   }, [])
