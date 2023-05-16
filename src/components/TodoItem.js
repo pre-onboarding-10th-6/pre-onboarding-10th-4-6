@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
-import { FaSpinner, FaTrash } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
 
 import { deleteTodo } from '../api/todo'
+
+import Spinner from './Spinner'
 
 const TodoItem = ({ id, title, setTodos }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -29,7 +31,7 @@ const TodoItem = ({ id, title, setTodos }) => {
             <FaTrash className="btn-trash" />
           </button>
         ) : (
-          <FaSpinner className="spinner" />
+          <Spinner />
         )}
       </div>
     </li>

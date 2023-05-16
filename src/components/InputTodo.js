@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
+import { FaPlusCircle } from 'react-icons/fa'
 import { styled } from 'styled-components'
 
 import { createTodo } from '../api/todo'
@@ -7,6 +7,7 @@ import useFocus from '../hooks/useFocus'
 import useInput from '../hooks/useInput'
 
 import SearchContents from './SearchContents'
+import Spinner from './Spinner'
 
 const InputTodo = ({ setTodos }) => {
   const { values, setValues, handleChange } = useInput('')
@@ -64,7 +65,7 @@ const InputTodo = ({ setTodos }) => {
             <FaPlusCircle className="btn-plus" />
           </button>
         ) : (
-          <FaSpinner className="spinner" />
+          <Spinner />
         )}
         <div>{isFocused && <SearchContents values={values} />}</div>
       </Form>
