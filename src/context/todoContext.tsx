@@ -2,14 +2,14 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react'
 
 import { TodoService } from '../service/TodoService'
 
-import todoReducer, { TodoState, TodoActionTypes } from './todoReducer'
+import todoReducer, { TodoState, TodoActionTypes, Todo } from './todoReducer'
 
 const initialState: TodoState = []
 
 const TodoStateContext = createContext<TodoState | null>(null)
 const TodoDispatchContext = createContext<{
-  add: ({ title }: { title: string }) => void
-  remove: (id: string) => void
+  add: ({ title }: { title: string }) => Promise<void>
+  remove: (id: string) => Promise<void>
 } | null>(null)
 
 const useTodoState = () => {
@@ -38,7 +38,10 @@ function TodoProvider({ children, todoService }: TodoProviderProps) {
     todoService.get().then(({ data }) =>
       dispatch({
         type: TodoActionTypes.SET_TODOS,
-        payload: data
+        payload: data.map(({ id, title }: Todo) => ({
+          id,
+          title
+        }))
       })
     )
   }, [todoService, dispatch])
