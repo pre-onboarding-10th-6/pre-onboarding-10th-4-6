@@ -11,7 +11,10 @@ type Props = {
 const InputTodo = ({ setTodos }: Props) => {
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { ref, setFocus } = useFocus() as { ref: React.RefObject<HTMLInputElement>, setFocus: () => void } // TODO: Fix this
+  const { ref, setFocus } = useFocus() as {
+    ref: React.RefObject<HTMLInputElement>
+    setFocus: () => void
+  } // TODO: Fix this
 
   useEffect(() => {
     setFocus()

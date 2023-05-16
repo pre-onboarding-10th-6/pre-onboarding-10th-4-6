@@ -14,10 +14,11 @@ const Header = () => {
     textAlign: 'center'
   } as React.CSSProperties
 
-  return <header style={headerStyle}>
-    <h1 style={titleStyle}>Toodos</h1>
-  </header>
-
+  return (
+    <header style={headerStyle}>
+      <h1 style={titleStyle}>Toodos</h1>
+    </header>
+  )
 }
 
 export default Header
