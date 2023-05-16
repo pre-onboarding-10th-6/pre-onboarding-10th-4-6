@@ -10,6 +10,7 @@ import { createTodo } from '../../api/todo'
 import useClickAndBlur from '../../hooks/useClickAndBlur'
 import useDebouncingSearch from '../../hooks/useDebouncingSearch'
 import useFocus from '../../hooks/useFocus'
+import useScrollEffect from '../../hooks/useScrollEffect'
 import { TodoData } from '../../types/types'
 import HighlightingText from '../HighlightingText'
 import { Spinner } from '../InputTodo/styles'
@@ -58,17 +59,11 @@ const SearchBar: React.FC<InputTodoProps> = ({ setTodos }) => {
       setSearchResult([])
     }
   }
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.addEventListener('scroll', handleScroll)
-    }
-    return () => {
-      if (scrollRef.current) {
-        scrollRef.current.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [handleScroll, searchText, searchResult, total])
+  useScrollEffect({
+    scrollRef: scrollRef,
+    handleScroll: handleScroll,
+    dependencies: [handleScroll, searchText, searchResult, total]
+  })
   // console.log('searchText', searchResult)
   //   console.log('total', total)
   return (
