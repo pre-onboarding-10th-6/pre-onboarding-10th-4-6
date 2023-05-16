@@ -13,7 +13,7 @@ const baseInstance = axios.create({
 baseInstance.interceptors.response.use(({ data }) => data)
 
 interface Request {
-  [key: string]: string
+  [key: string]: object
 }
 
 const apiRequest = {
