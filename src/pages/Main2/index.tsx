@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { getTodoList } from '../../api/todo'
+import InputTodo from '../../components/InputTodo'
+import SearchBar from '../../components/SearchBar'
+import TodoList from '../../components/TodoList'
 import { TodoData } from '../../types/types'
 
 import { Title, Header, MainWrap, MainContent } from './styles'
@@ -25,6 +28,16 @@ const Main2 = () => {
         <Header>
           <Title>Todos</Title>
         </Header>
+        <InputTodo
+          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+        />
+        <SearchBar
+          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+        />
+        <TodoList
+          todos={todoListData as TodoData[]}
+          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+        />
       </MainContent>
     </MainWrap>
   )

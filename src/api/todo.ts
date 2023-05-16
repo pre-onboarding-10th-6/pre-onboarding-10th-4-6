@@ -9,18 +9,23 @@ export const getTodoList = async (): Promise<CommonResponse<TodoData>> => {
     const response = await apiRequest.get<CommonResponse<TodoData>>(
       `${RESOURCE}`
     )
-    console.log(response.data)
+
     return response.data
   } catch (error) {
     throw new Error('API getTodoList error')
   }
 }
 
-export const createTodo = async (data: { title: string }) => {
+export const createTodo = async (data: {
+  title: string
+}): Promise<CommonResponse<TodoData>> => {
   try {
-    const response = await apiRequest.post(`${RESOURCE}`, data)
-
-    return response
+    const response = await apiRequest.post<CommonResponse<TodoData>>(
+      `${RESOURCE}`,
+      data
+    )
+    console.log('radv', response.data)
+    return response.data
   } catch (error) {
     throw new Error('API createTodo error')
   }
