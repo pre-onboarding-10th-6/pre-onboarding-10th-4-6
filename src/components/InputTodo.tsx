@@ -8,7 +8,10 @@ import useCloseDropdown from '../hooks/useCloseDropDown'
 import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { StSpinner } from '../styles/common'
+import { ISuggestionRes } from '../types/suggestion'
 import { ITodo } from '../types/todo'
+
+import SuggestList from './suggestList'
 
 interface IProps {
   setTodos: Dispatch<React.SetStateAction<ITodo[]>>
@@ -16,7 +19,7 @@ interface IProps {
 
 const InputTodo = ({ setTodos }: IProps) => {
   const [inputText, setInputText] = useState<string>('')
-  const [suggestList, setSuggestList] = useState<string[]>()
+  const [suggest, setSuggest] = useState<ISuggestionRes>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
   const [isOpenDropdown, dropdownRef, dropdownHandler] = useCloseDropdown(false)
@@ -28,19 +31,19 @@ const InputTodo = ({ setTodos }: IProps) => {
 
   const getSuggestList = useCallback(async () => {
     if (debounceInput === '') {
-      setSuggestList(undefined)
+      setSuggest(undefined)
       return
     }
     try {
       const { data } = await getSuggestion({ q: debounceInput })
-      const { result } = data
-      setSuggestList(result)
+
+      setSuggest(data)
       if (!isOpenDropdown) {
         dropdownHandler()
       }
     } catch (error) {
       console.error(error)
-      setSuggestList(undefined)
+      setSuggest(undefined)
     }
   }, [debounceInput])
 
@@ -95,16 +98,11 @@ const InputTodo = ({ setTodos }: IProps) => {
           <StSpinner />
         )}
       </StFormContainer>
-      {isOpenDropdown && (
-        <StSuggestListContainer
-          ref={dropdownRef as React.RefObject<HTMLDivElement>}
-        >
-          <ul>
-            {suggestList?.map(v => {
-              return <li key={v}>{v}</li>
-            })}
-          </ul>
-        </StSuggestListContainer>
+      {isOpenDropdown && suggest && (
+        <SuggestList
+          suggest={suggest}
+          dropdownRef={dropdownRef as React.RefObject<HTMLDivElement>}
+        />
       )}
     </>
   )
@@ -114,7 +112,7 @@ export default InputTodo
 
 const StFormContainer = styled.form`
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   display: flex;
   border-radius: calc(0.5 * 100px);
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
@@ -150,7 +148,4 @@ const StSubmitButton = styled.button`
 const StFaPlusCircle = styled(FaPlusCircle)`
   color: darkcyan;
   font-size: 20px;
-`
-const StSuggestListContainer = styled.div`
-  width: 100%;
 `
