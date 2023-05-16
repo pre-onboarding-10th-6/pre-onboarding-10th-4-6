@@ -1,19 +1,38 @@
-import { useCallback, useEffect, useState } from 'react'
-import { FaPlusCircle } from 'react-icons/fa'
+import { useCallback, useEffect } from 'react'
+import { FaPlusCircle, FaSearch } from 'react-icons/fa'
 import styled from 'styled-components'
 
 import { useTodoDispatch } from '../context/todoContext'
+import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import useInput from '../hooks/useInput'
+import useStatus, { StatusTypes } from '../hooks/useStatus'
 
+import Dropdown from './Dropdown'
 import Spinner from './Spinner'
+
+const DEBOUNCE_DELAY = 500
 
 const TodoInput = () => {
   const { value, handleChange, reset } = useInput('')
-  const { ref, setFocus } = useFocus<HTMLInputElement>()
-  const [isLoading, setIsLoading] = useState(false)
+  const debouncedValue = useDebounce(value, DEBOUNCE_DELAY)
 
+  const { status, changeStatus, isIdle } = useStatus()
+  const { ref, setFocus } = useFocus<HTMLInputElement>()
   const { add } = useTodoDispatch()
+
+  const handleAddTodo = async (title: string) => {
+    try {
+      changeStatus(StatusTypes.SAVING)
+      await add({ title })
+      reset()
+    } catch (error) {
+      console.error(error)
+      alert('Something went wrong.')
+    } finally {
+      changeStatus(StatusTypes.IDLE)
+    }
+  }
 
   useEffect(() => {
     setFocus()
@@ -22,61 +41,83 @@ const TodoInput = () => {
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       try {
+        changeStatus(StatusTypes.SAVING)
         e.preventDefault()
-        setIsLoading(true)
         const trimmed = value.trim()
         if (!trimmed) {
           return alert('Please write something')
         }
         const newItem = { title: trimmed }
         await add(newItem)
+        reset()
       } catch (error) {
         console.error(error)
         alert('Something went wrong.')
       } finally {
-        reset()
-        setIsLoading(false)
+        changeStatus(StatusTypes.IDLE)
       }
     },
     [value]
   )
 
   return (
-    <TodoInputLayout onSubmit={handleSubmit}>
-      <input
-        placeholder="Add new todo..."
-        ref={ref}
-        value={value}
-        onChange={handleChange}
-        disabled={isLoading}
+    <TodoInputLayout>
+      <TodoInputForm onSubmit={handleSubmit}>
+        <FaSearch />
+        <input
+          placeholder="Add new todo..."
+          ref={ref}
+          value={value}
+          onChange={handleChange}
+          disabled={!isIdle}
+        />
+        {isIdle ? (
+          <TodoInputSubmitButton>
+            <FaPlusCircle />
+          </TodoInputSubmitButton>
+        ) : (
+          <Spinner />
+        )}
+      </TodoInputForm>
+      <Dropdown
+        keyword={debouncedValue}
+        handleAddTodo={handleAddTodo}
+        changeStatus={changeStatus}
+        isSearching={status === StatusTypes.SEARCHING}
       />
-      {!isLoading ? (
-        <TodoInputSubmitButton>
-          <FaPlusCircle />
-        </TodoInputSubmitButton>
-      ) : (
-        <Spinner />
-      )}
     </TodoInputLayout>
   )
 }
 
-const TodoInputLayout = styled.form`
+const TodoInputLayout = styled.div`
+  position: relative;
+`
+
+const TodoInputForm = styled.form`
   display: flex;
-  justify-content: space-evenly;
-  width: 100%;
+  align-items: center;
+  height: 45px;
   margin: 0 0 20px 0;
-  border-radius: 50px;
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
+  padding: 0 20px;
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  background: #fff;
+
+  &:hover {
+    border: 3px solid #dedede;
+  }
+
+  &:focus-within {
+    border: 1px solid #9f9f9f;
+  }
 
   input {
-    width: 85%;
-    height: 45px;
-    padding: 0 5px 0 10px;
-    border-radius: 50px;
+    flex: 1;
+    padding: 0 15px;
     background-color: transparent;
     font-size: 1rem;
     font-weight: 400;
+    text-overflow: ellipsis;
   }
 `
 

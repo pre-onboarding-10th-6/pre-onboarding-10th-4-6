@@ -22,3 +22,9 @@ button {
   outline: none;
   cursor: pointer;
 }
+
+ul,
+ol,
+li {
+  list-style-type: none;
+}

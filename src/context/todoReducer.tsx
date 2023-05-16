@@ -1,4 +1,7 @@
-import { Todo } from '../types/todo'
+export interface Todo {
+  id: string
+  title: string
+}
 
 export type TodoState = Todo[]
 

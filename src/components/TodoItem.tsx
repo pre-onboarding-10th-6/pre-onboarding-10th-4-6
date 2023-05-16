@@ -12,16 +12,15 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ id, title }: TodoItemProps) => {
-  const [isLoading, setIsLoading] = useState(false)
-
+  const [isInProgress, setIsInProgress] = useState(false)
   const { remove } = useTodoDispatch()
 
   const handleRemoveTodo = useCallback(async () => {
     try {
-      setIsLoading(true)
+      setIsInProgress(true)
       await remove(id)
     } catch (error) {
-      setIsLoading(false)
+      setIsInProgress(false)
       console.error(error)
       alert('Something went wrong.')
     }
@@ -31,7 +30,7 @@ const TodoItem = ({ id, title }: TodoItemProps) => {
     <TodoItemLayout>
       <span>{title}</span>
       <TodoItemOptionBox>
-        {!isLoading ? (
+        {!isInProgress ? (
           <TodoItemRemoveButton onClick={handleRemoveTodo}>
             <FaTrash />
           </TodoItemRemoveButton>
@@ -44,7 +43,6 @@ const TodoItem = ({ id, title }: TodoItemProps) => {
 }
 
 const TodoItemLayout = styled.li`
-  list-style-type: none;
   padding: 17px 1.5rem;
   border-bottom: 1px solid #eaeaea;
   font-size: 1.2rem;
