@@ -57,7 +57,8 @@ const useDebouncingSearch = (delay: number) => {
     handleSearch,
     loadMoreResults,
     total,
-    setPage
+    setPage,
+    setSearchResult
   }
 }
 

@@ -1,17 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 
+import { createTodo } from '../../api/todo'
 import useClickAndBlur from '../../hooks/useClickAndBlur'
 import useDebouncingSearch from '../../hooks/useDebouncingSearch'
+import useFocus from '../../hooks/useFocus'
+import { TodoData } from '../../types/types'
 import HighlightingText from '../HighlightingText'
+import { Spinner } from '../InputTodo/styles'
 
-import { DropDown, DropDownItem, Input } from './styles'
+import { DropDown, DropDownItem, Input, SpinnerWrapper } from './styles'
 
-const SearchBar: React.FC = () => {
+interface InputTodoProps {
+  setTodos: Dispatch<SetStateAction<TodoData[]>>
+}
+const SearchBar: React.FC<InputTodoProps> = ({ setTodos }) => {
+  const { ref, setFocus } = useFocus()
   const scrollRef = useRef<HTMLUListElement>(null)
   const [searchText, setSearchText] = useState<string>('')
   const { isClicked, handleClick, handleBlur } = useClickAndBlur()
-  const { searchResult, handleSearch, loadMoreResults, total, setPage } =
-    useDebouncingSearch(500)
+  const {
+    searchResult,
+    handleSearch,
+    loadMoreResults,
+    total,
+    setPage,
+    setSearchResult
+  } = useDebouncingSearch(500)
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchWord = event.target.value
@@ -30,10 +50,13 @@ const SearchBar: React.FC = () => {
       loadMoreResults(searchText)
     }
   }
-  const handleItemClick = (item: string) => {
-    console.log('item', item)
-    setSearchText('')
-    handleSearch('')
+  const handleItemClick = async (item: string) => {
+    const { data } = await createTodo({ title: item })
+    if (data) {
+      setTodos((prev: any) => [...prev, data])
+      setSearchText('')
+      setSearchResult([])
+    }
   }
 
   useEffect(() => {
@@ -51,6 +74,7 @@ const SearchBar: React.FC = () => {
   return (
     <>
       <Input
+        ref={ref}
         value={searchText}
         placeholder="검색어 입력"
         onClick={handleClick}
@@ -70,6 +94,12 @@ const SearchBar: React.FC = () => {
               <HighlightingText text={item} searchText={searchText} />
             </DropDownItem>
           ))}
+
+          {searchResult.length < total && (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          )}
         </DropDown>
       )}
     </>

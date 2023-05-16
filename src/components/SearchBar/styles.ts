@@ -39,4 +39,16 @@ export const DropDownItem = styled.li`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  &:hover {
+    background-color: #f2f2f2;
+  }
+  &:active {
+    background-color: #d5f4f1;
+  }
+`
+export const SpinnerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
 `
