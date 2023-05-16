@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
-import { SearchData, getSearchData } from '../api/search'
 import { createTodo } from '../api/todo'
-import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { Todo } from '../pages/Main'
 
@@ -15,9 +13,7 @@ const InputTodo = ({
   setTodos: (value: ((prevState: Todo[]) => Todo[]) | Todo[]) => void
 }) => {
   const [inputText, setInputText] = useState<string>('')
-  const debouncedInputText = useDebounce(inputText, 2000)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [keywordData, setKeywordData] = useState<SearchData | null>(null)
   const { ref, setFocus } = useFocus()
 
   useEffect(() => {
@@ -36,7 +32,7 @@ const InputTodo = ({
         }
 
         const newItem = { title: trimmed }
-        const data = await createTodo(newItem)
+        const { data } = await createTodo(newItem)
 
         if (data) {
           setTodos((prev: Todo[]) => [...prev, data])
@@ -52,26 +48,27 @@ const InputTodo = ({
     [inputText, setTodos]
   )
 
-  const fetchKeywordData = async (
-    keyword: string,
-    page?: number,
-    limit?: number
-  ) => {
-    if (keyword.trim() === '') {
-      return
-    }
-    const { data } = await getSearchData({
-      q: keyword,
-      page: page,
-      limit: limit
-    })
-    console.log(data)
-    setKeywordData(data)
-  }
+  const handleSelect = useCallback(
+    async (selectedText: string) => {
+      try {
+        setIsLoading(true)
 
-  useEffect(() => {
-    fetchKeywordData(debouncedInputText)
-  }, [debouncedInputText])
+        const newItem = { title: selectedText }
+        const { data } = await createTodo(newItem)
+
+        if (data) {
+          setTodos((prev: Todo[]) => [...prev, data])
+        }
+      } catch (error) {
+        console.error(error)
+        alert('Something went wrong.')
+      } finally {
+        setInputText('')
+        setIsLoading(false)
+      }
+    },
+    [setTodos]
+  )
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value)
@@ -96,11 +93,7 @@ const InputTodo = ({
           <FaSpinner className="spinner" />
         )}
       </form>
-      <RecommandKeywordList
-        keywordData={keywordData}
-        keyword={inputText}
-        isLoading={isLoading}
-      />
+      <RecommandKeywordList keyword={inputText} onSelect={handleSelect} />
     </>
   )
 }

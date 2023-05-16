@@ -6,6 +6,7 @@ import { highlightText } from '../utils/highlightText'
 interface KeywordItemProps {
   item: string
   keyword: string
+  onSelect: (selectedText: string) => Promise<void>
 }
 
 const ListItem = styled.li`
@@ -29,11 +30,18 @@ const Highlighted = styled.span`
   color: red;
 `
 
-const KeywordItem: React.FC<KeywordItemProps> = ({ item, keyword }) => {
+const KeywordItem: React.FC<KeywordItemProps> = ({
+  item,
+  keyword,
+  onSelect
+}) => {
   const splitText = highlightText(item, keyword)
+  const handleClick = () => {
+    onSelect(item)
+  }
 
   return (
-    <ListItem>
+    <ListItem onClick={handleClick}>
       {splitText.map((text, i) =>
         text.toLowerCase() === keyword.toLowerCase() ? (
           <Highlighted key={i}>{text}</Highlighted>
