@@ -16,6 +16,14 @@ const ListContainer = styled.div`
   box-shadow: 0px 0px 1px rgba(50, 50, 50, 0.05),
     0px 2px 4px rgba(50, 50, 50, 0.1);
 `
+const LoadMoreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px 0;
+`
+
 interface RecommandKeywordListProp {
   keyword: string
   onSelect: (selectedText: string) => Promise<void>
@@ -103,7 +111,7 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
         ))}
 
         <li>
-          <div ref={targetRef}>
+          <LoadMoreContainer ref={targetRef}>
             {!isLastPage && (
               <>
                 {isLoading ? (
@@ -113,7 +121,7 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
                 )}
               </>
             )}
-          </div>
+          </LoadMoreContainer>
         </li>
       </ul>
     </ListContainer>
