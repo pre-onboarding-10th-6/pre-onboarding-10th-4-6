@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-import { Todo } from '../pages/Main'
+import { ApiResponse } from './todo'
 
 const baseURL = process.env.REACT_APP_API_URL
 const token = process.env.REACT_APP_TOKEN
@@ -15,13 +15,13 @@ const baseInstance: AxiosInstance = axios.create({
 baseInstance.interceptors.response.use(({ data }) => data)
 
 interface ApiRequest {
-  get: (url: string, request?: AxiosRequestConfig) => Promise<any>
+  get: <T>(url: string, request?: AxiosRequestConfig) => Promise<ApiResponse<T>>
   delete: (url: string, request?: AxiosRequestConfig) => Promise<unknown>
-  post: (
+  post: <T>(
     url: string,
-    data?: string,
+    data?: Record<string, unknown>,
     config?: AxiosRequestConfig
-  ) => Promise<Todo>
+  ) => Promise<ApiResponse<T>>
 }
 
 const apiRequest: ApiRequest = {

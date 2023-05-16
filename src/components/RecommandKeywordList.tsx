@@ -1,8 +1,10 @@
-import React from 'react'
-import { FaSpinner } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
+import { FaChevronDown, FaSpinner } from 'react-icons/fa'
 import styled from 'styled-components'
 
-import { SearchData } from '../api/search'
+import { SearchData, getSearchData } from '../api/search'
+import useDebounce from '../hooks/useDebounce'
+import useIntersectionObserver from '../hooks/useInfiniteScroll'
 
 import KeywordItem from './KeywordItem'
 
@@ -14,28 +16,83 @@ const ListContainer = styled.div`
   box-shadow: 0px 0px 1px rgba(50, 50, 50, 0.05),
     0px 2px 4px rgba(50, 50, 50, 0.1);
 `
+const LoadMoreContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px 0;
+`
 
 interface RecommandKeywordListProp {
-  keywordData: SearchData | null
   keyword: string
-  isLoading: boolean
+  onSelect: (selectedText: string) => Promise<void>
 }
 
+const PAGE_LIMIT = 10
+const DELAY_TIME = 500
+
 const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
-  keywordData,
   keyword,
-  isLoading
+  onSelect
 }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [keywordData, setKeywordData] = useState<SearchData | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const debouncedKeyword = useDebounce(keyword, DELAY_TIME)
+  const totalResults = keywordData?.total || 0
+  const totalPages = Math.ceil(totalResults / PAGE_LIMIT) ?? 0
+  const isLastPage = currentPage >= totalPages
+
   const shouldRenderList =
     keyword.trim() !== '' && keywordData && keywordData?.result?.length > 0
 
-  if (isLoading && keyword.trim() !== '') {
-    return (
-      <ListContainer>
-        <FaSpinner className="spinner" />
-      </ListContainer>
-    )
+  const handleMoreButtonClick = () => {
+    if (isLastPage) {
+      return
+    }
+    setCurrentPage(prevPageNumber => prevPageNumber + 1)
   }
+  const { targetRef } = useIntersectionObserver(
+    handleMoreButtonClick,
+    isLoading
+  )
+
+  useEffect(() => {
+    setCurrentPage(1)
+    setKeywordData(null)
+  }, [debouncedKeyword])
+
+  useEffect(() => {
+    if (debouncedKeyword.trim() === '') {
+      setKeywordData(null)
+      return
+    }
+    setIsLoading(true)
+    getSearchData({
+      q: debouncedKeyword,
+      page: currentPage,
+      limit: PAGE_LIMIT
+    })
+      .then(({ data }) => {
+        setKeywordData(prevData => {
+          if (prevData && currentPage > 1) {
+            return {
+              ...data,
+              result: [...prevData.result, ...data.result]
+            }
+          } else {
+            return data
+          }
+        })
+      })
+      .catch(error => {
+        console.error(error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [debouncedKeyword, currentPage])
 
   if (!shouldRenderList) {
     return null
@@ -45,13 +102,29 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
     <ListContainer>
       <ul>
         {keywordData?.result?.map((item, index) => (
-          <KeywordItem key={index} item={item} keyword={keyword} />
+          <KeywordItem
+            key={index}
+            item={item}
+            keyword={keyword}
+            onSelect={onSelect}
+          />
         ))}
+
+        <li>
+          <LoadMoreContainer ref={targetRef}>
+            {!isLastPage && (
+              <>
+                {isLoading ? (
+                  <FaSpinner className="spinner" />
+                ) : (
+                  <FaChevronDown />
+                )}
+              </>
+            )}
+          </LoadMoreContainer>
+        </li>
       </ul>
     </ListContainer>
   )
 }
-// TODO: 아이템 하나를 선택하면, input의 value는 초기화되고 아이템이 리스트에 ? 추가되도록 구현 TODOLIST에 추가하라는거 같음
-//       리스트를 선택 -> inputText초기화 -> createTodo API에 선택한 텍스트로 createTodo 호출
-// TODO: 리스트가 처음에 10개 나올 수 있도록하고 더 있으면 무한 스크롤로 최대 10개씩 받아올 수 있도록 구현
 export default RecommandKeywordList
