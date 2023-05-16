@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 import { FaSpinner, FaTrash } from 'react-icons/fa'
 
 import { deleteTodo } from '../api/todo'
-import { useTodoDispatch } from '../context/TodoContextProvider'
-import { removeTodo } from '../context/todoReducer'
+import { useTodoDispatch } from '../context/todo/TodoContextProvider'
+import { removeTodo } from '../context/todo/todoReducer'
 
 type Props = {
   id: string

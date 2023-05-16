@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   line-height: 1.4;
   color: #444;
   background: #fff;
@@ -36,6 +36,41 @@ body {
   border-radius: calc(0.5 * 100px);
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
   justify-content: space-evenly;
+}
+
+.suggestion-container {
+  position: absolute;
+  width: 580px;
+  height: 300px;
+  overflow-y: scroll;
+  padding: 5px;
+  background-color: #fff;
+  z-index: 1;
+  margin-bottom: 20px;
+  list-style: none;
+  border-radius: 4px;
+  border: 1px solid #dfdfdf;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.38);
+  justify-content: space-evenly;
+}
+
+.suggestion-container li {
+  background-color: #fff;
+  padding: 10px;
+  cursor: pointer;
+}
+.suggestion-container li:hover {
+  background-color: #f2f2f2;
+}
+
+.suggestion-container li:active {
+  background-color: #d5f4f1;
+}
+
+.suggestion-container div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .input-text {
@@ -132,6 +167,11 @@ body {
   font-size: 20px;
   animation: spin 2s linear infinite;
   display: flex;
+  align-self: center;
+}
+
+.more-suggestions {
+  font-size: 20px;
   align-self: center;
 }
 

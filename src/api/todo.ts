@@ -31,3 +31,19 @@ export const deleteTodo = async (id: string) => {
     throw new Error('API deleteTodo error')
   }
 }
+
+export const getSuggestions = async (
+  query: string,
+  page: number,
+  limit = 10
+) => {
+  try {
+    const response = await apiRequest.get<SuggestionsPayload>(
+      `/search?q=${query}&page=${page}&limit=${limit}`
+    )
+
+    return response
+  } catch (error) {
+    throw new Error('API getSuggestions error')
+  }
+}

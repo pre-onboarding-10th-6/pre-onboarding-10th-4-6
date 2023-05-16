@@ -4,8 +4,9 @@ import { getTodoList } from '../api/todo'
 import Header from '../components/Header'
 import InputTodo from '../components/InputTodo'
 import TodoList from '../components/TodoList'
-import { useTodoDispatch } from '../context/TodoContextProvider'
-import { setTodos } from '../context/todoReducer'
+import { SuggestionProvider } from '../context/suggestion/SuggestionProvider'
+import { useTodoDispatch } from '../context/todo/TodoContextProvider'
+import { setTodos } from '../context/todo/todoReducer'
 
 const Main = () => {
   const dispatch = useTodoDispatch()
@@ -21,7 +22,15 @@ const Main = () => {
     <div className="container">
       <div className="inner">
         <Header />
-        <InputTodo />
+        <SuggestionProvider>
+          <InputTodo />
+        </SuggestionProvider>
+        {/* <div style={{ backgroundColor: 'tomato', height: 400 }}>
+          <ul>
+            <li>1</li>
+            <li>2</li>
+          </ul>
+        </div> */}
         <TodoList />
       </div>
     </div>

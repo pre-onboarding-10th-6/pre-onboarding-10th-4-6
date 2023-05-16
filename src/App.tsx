@@ -1,5 +1,5 @@
 import './App.css'
-import { TodoProvider } from './context/TodoContextProvider'
+import { TodoProvider } from './context/todo/TodoContextProvider'
 import Main from './pages/Main'
 
 const App = () => {
