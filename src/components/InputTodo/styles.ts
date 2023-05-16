@@ -17,6 +17,9 @@ export const Input = styled.input`
   padding-left: 10px;
   border-radius: calc(0.5 * 100px);
   background-color: transparent;
+  border: 0;
+  height: 45px;
+  outline: none;
 `
 
 export const Button = styled.button`
@@ -24,6 +27,7 @@ export const Button = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  border: 0;
 `
 export const Circle = styled(FaPlusCircle)`
   color: darkcyan;
