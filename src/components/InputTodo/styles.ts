@@ -34,5 +34,4 @@ export const Spinner = styled(FaSpinner)`
   animation: spin 2s linear infinite;
   display: flex;
   align-self: center;
-  justify-self: center;
 `

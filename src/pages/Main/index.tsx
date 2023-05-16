@@ -8,7 +8,7 @@ import { TodoData } from '../../types/types'
 
 import { Title, Header, MainWrap, MainContent } from './styles'
 
-const Main2 = () => {
+const Main = () => {
   const [todoListData, setTodoListData] = useState<TodoData | []>([])
 
   useEffect(() => {
@@ -43,4 +43,4 @@ const Main2 = () => {
   )
 }
 
-export default Main2
+export default Main
