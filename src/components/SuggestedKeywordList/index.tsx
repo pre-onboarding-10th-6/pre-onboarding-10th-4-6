@@ -1,30 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaSpinner } from 'react-icons/fa'
-import styled from 'styled-components'
 
-import { SearchData, getSearchData } from '../api/search'
-import useDebounce from '../hooks/useDebounce'
-import useIntersectionObserver from '../hooks/useInfiniteScroll'
+import { SearchData, getSearchData } from '../../api/search'
+import useDebounce from '../../hooks/useDebounce'
+import useIntersectionObserver from '../../hooks/useInfiniteScroll'
 
 import KeywordItem from './KeywordItem'
+import { ListContainer, LoadMoreContainer } from './style'
 
-const ListContainer = styled.div`
-  width: 100%;
-  max-height: 164px;
-  overflow-y: scroll;
-  border: 1px solid #dfdfdf;
-  box-shadow: 0px 0px 1px rgba(50, 50, 50, 0.05),
-    0px 2px 4px rgba(50, 50, 50, 0.1);
-`
-const LoadMoreContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 10px 0;
-`
-
-interface RecommandKeywordListProp {
+interface SuggestedKeywordListProp {
   keyword: string
   onSelect: (selectedText: string) => Promise<void>
 }
@@ -32,7 +16,7 @@ interface RecommandKeywordListProp {
 const PAGE_LIMIT = 10
 const DELAY_TIME = 500
 
-const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
+const SuggestedKeywordList: React.FC<SuggestedKeywordListProp> = ({
   keyword,
   onSelect
 }) => {
@@ -127,4 +111,4 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
     </ListContainer>
   )
 }
-export default RecommandKeywordList
+export default SuggestedKeywordList

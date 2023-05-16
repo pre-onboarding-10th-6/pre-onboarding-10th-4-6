@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
-import { createTodo } from '../api/todo'
-import useFocus from '../hooks/useFocus'
-import { Todo } from '../pages/Main'
-
-import RecommandKeywordList from './RecommandKeywordList'
+import { createTodo } from '../../api/todo'
+import useFocus from '../../hooks/useFocus'
+import { Todo } from '../../pages/Main'
+import RecommandKeywordList from '../SuggestedKeywordList'
 
 const InputTodo = ({
   setTodos
