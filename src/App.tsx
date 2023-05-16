@@ -1,3 +1,4 @@
+import './styles/reset.css'
 import './App.css'
 
 import Main from './pages/Main'

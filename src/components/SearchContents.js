@@ -21,31 +21,24 @@ const SearchContents = ({ values }) => {
     fetchData()
   }, [values])
 
-  //   const searchSubstring = (matchingItems, values) => {
-  //     return matchingItems.includes(values)
-  //   }
-
   return (
     <>
       {values.length > 0 && (
-        <div className="container">
+        <SearchWrapper>
           <SearchContainer>
-            <Text>{values}</Text>
             {matchingItems?.map((item, idx) => (
-              <>
-                {item.includes(values) ? (
-                  <IncludedList key={idx}>
+              <Suggestions key={idx}>
+                {item.includes(values) && (
+                  <SuggestedItem>
                     {item.split(values)[0]}
-                    <span style={{ color: '#2BC9BA' }}>{values}</span>
+                    <IncludedItem>{values}</IncludedItem>
                     {item.split(values)[1]}
-                  </IncludedList>
-                ) : (
-                  item
+                  </SuggestedItem>
                 )}
-              </>
+              </Suggestions>
             ))}
           </SearchContainer>
-        </div>
+        </SearchWrapper>
       )}
     </>
   )
@@ -53,19 +46,59 @@ const SearchContents = ({ values }) => {
 
 export default SearchContents
 
+const SearchWrapper = styled.div`
+  background: red;
+`
+
 const SearchContainer = styled.ul`
   position: absolute;
-  top: 500px;
+  top: 49px;
   left: 0;
-  width: 500px;
-  height: 300px;
-  background: blue;
+  width: 100%;
+  max-height: 164px;
+  padding: 9px 5px;
+  background: #fff;
+  border: 1px solid #dedede;
+  box-shadow: 0px 0px 1px rgba(50, 50, 50, 0.05),
+    0px 2px 4px rgba(50, 50, 50, 0.1);
+  border-radius: 5px;
+  overflow-y: scroll;
+  z-index: 99;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.48);
+    margin 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    width: 4px;
+    border-radius: 2px;
+    background: none;
+  }
 `
 
-const Text = styled.div`
+const Suggestions = styled.li`
+  padding: 6px 12px;
+  text-decoration: none;
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    background: #f2f2f2;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+`
+
+const SuggestedItem = styled.div``
+
+const IncludedItem = styled.span`
   color: #2bc9ba;
-`
-
-const IncludedList = styled.li`
-  color: #fff;
 `

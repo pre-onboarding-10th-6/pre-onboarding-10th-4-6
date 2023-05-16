@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   line-height: 1.4;
   color: #444;
   background: #fff;
@@ -34,8 +34,9 @@ body {
   margin-bottom: 20px;
   display: flex;
   border-radius: calc(0.5 * 100px);
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
+  /* box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38); */
   justify-content: space-evenly;
+  /* background-color: blue; */
 }
 
 .input-text {
