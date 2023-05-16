@@ -2,6 +2,7 @@ import { createContext, useContext, useRef, useReducer } from 'react'
 
 import { getSearch } from '../../../../api/search'
 import { createTodo } from '../../../../api/todo'
+import useTryCatchErrorHandling from '../../../../hooks/useTryCatchErrorHandling'
 import {
   ContextProps,
   ContextDispatchProps,
@@ -32,20 +33,22 @@ const SearchProvider = ({ children, setTodos }: SearchProps) => {
   const [state, dispatch] = useReducer(searchReducer, initialState)
   const dropdownPage = useRef(1)
 
-  const callSearchAPI = async (input: string, page: number) => {
-    const { data } = await getSearch(`q=${input}&page=${page}`)
-    dispatch({
-      type: SEARCH_AT.SEARCH_WITH_DROPDOWN,
-      payload: { result: data.result, isNextExist: isNextExistChecker(data) }
-    })
-  }
+  const callSearchAPI = useTryCatchErrorHandling(
+    async (input: string, page: number) => {
+      const { data } = await getSearch(`q=${input}&page=${page}`)
+      dispatch({
+        type: SEARCH_AT.SEARCH_WITH_DROPDOWN,
+        payload: { result: data.result, isNextExist: isNextExistChecker(data) }
+      })
+    }
+  )
 
-  const callCreateTodoAPI = async (title: string) => {
+  const callCreateTodoAPI = useTryCatchErrorHandling(async (title: string) => {
     dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: true })
     const { data } = await createTodo({ title })
     setTodos(prev => [...prev, data])
     dispatch({ type: SEARCH_AT.SET_SEARCH_LOADING, payload: false })
-  }
+  })
 
   return (
     <SearchContext.Provider value={{ dropdownPage, state }}>
