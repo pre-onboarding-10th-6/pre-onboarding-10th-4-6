@@ -6,6 +6,8 @@ import { StSpinner } from '../styles/common'
 import { ISuggestionRes } from '../types/suggestion'
 import throttle from '../utils/throttle'
 
+import TextHighlight from './TextHighlight'
+
 interface IProps {
   suggest: ISuggestionRes
   dropdownRef: React.RefObject<HTMLDivElement>
@@ -64,16 +66,32 @@ const SuggestList = ({ suggest, dropdownRef }: IProps) => {
     getSuggestListByPage()
   }, [getSuggestListByPage])
 
+  const SuggestList = () => {
+    return (
+      <>
+        {list.length === 0 ? (
+          <StEmptyItemsWrap>empty item</StEmptyItemsWrap>
+        ) : (
+          <StSuggestListWrap ref={dropdownRef}>
+            <StUl>
+              {list.map((v, idx) => {
+                return (
+                  <StLi key={v + idx.toString()}>
+                    <TextHighlight targetText={v} searchText={q} />
+                  </StLi>
+                )
+              })}
+            </StUl>
+          </StSuggestListWrap>
+        )}
+      </>
+    )
+  }
+
   return (
     <StWrap>
       <StSuggestListContainer>
-        <StSuggestListWrap ref={dropdownRef}>
-          <StUl>
-            {list?.map((v, idx) => {
-              return <StLi key={v + idx.toString()}>{v}</StLi>
-            })}
-          </StUl>
-        </StSuggestListWrap>
+        {SuggestList()}
         {loading && (
           <StSpinnerWrap>
             <StSpinner />
@@ -89,12 +107,19 @@ const StWrap = styled.div`
   position: relative;
 `
 const StSuggestListContainer = styled.div`
+  width: 100%;
   position: absolute;
   border-radius: 8px;
   background-color: white;
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.38);
   z-index: 10;
 `
+
+const StEmptyItemsWrap = styled.div`
+  width: 100%;
+  padding: 12px 8px;
+`
+
 const StSuggestListWrap = styled.div`
   width: 100%;
   height: 200px;
