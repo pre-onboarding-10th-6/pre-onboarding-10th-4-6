@@ -4,17 +4,21 @@ import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 import { createTodo } from '../api/todo'
 import useFocus from '../hooks/useFocus'
 
-const InputTodo = ({ setTodos }) => {
+type Props = {
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
+}
+
+const InputTodo = ({ setTodos }: Props) => {
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { ref, setFocus } = useFocus()
+  const { ref, setFocus } = useFocus() as { ref: React.RefObject<HTMLInputElement>, setFocus: () => void } // TODO: Fix this
 
   useEffect(() => {
     setFocus()
   }, [setFocus])
 
   const handleSubmit = useCallback(
-    async e => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       try {
         e.preventDefault()
         setIsLoading(true)
