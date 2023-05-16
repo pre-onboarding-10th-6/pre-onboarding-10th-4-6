@@ -21,19 +21,6 @@ const TodoInput = () => {
   const { ref, setFocus } = useFocus<HTMLInputElement>()
   const { add } = useTodoDispatch()
 
-  const handleAddTodo = async (title: string) => {
-    try {
-      changeStatus(StatusTypes.SAVING)
-      await add({ title })
-      reset()
-    } catch (error) {
-      console.error(error)
-      alert('Something went wrong.')
-    } finally {
-      changeStatus(StatusTypes.IDLE)
-    }
-  }
-
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       try {
@@ -81,9 +68,9 @@ const TodoInput = () => {
       </TodoInputForm>
       <Dropdown
         keyword={debouncedValue}
-        handleAddTodo={handleAddTodo}
-        changeStatus={changeStatus}
         isSearching={status === StatusTypes.SEARCHING}
+        resetInput={reset}
+        changeStatus={changeStatus}
       />
     </TodoInputLayout>
   )

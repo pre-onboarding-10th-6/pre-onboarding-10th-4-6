@@ -3,6 +3,7 @@ import { FaEllipsisH } from 'react-icons/fa'
 import styled from 'styled-components'
 
 import { useSearchDispatch, useSearchState } from '../context/searchContext'
+import { useTodoDispatch } from '../context/todoContext'
 import useInfiniteScroll from '../hooks/useInfiniteScroll'
 import { StatusTypes } from '../hooks/useStatus'
 
@@ -11,26 +12,40 @@ import Spinner from './Spinner'
 
 interface DropdownProps {
   keyword: string
-  handleAddTodo: (title: string) => void
-  changeStatus: (state: StatusTypes) => void
   isSearching: boolean
+  resetInput: () => void
+  changeStatus: (state: StatusTypes) => void
 }
 
 const RECEIVING_LIMIT = 10
 
 const Dropdown = ({
   keyword,
-  handleAddTodo,
-  changeStatus,
-  isSearching
+  isSearching,
+  resetInput,
+  changeStatus
 }: DropdownProps) => {
   const { results, isEnd } = useSearchState()
-  const { add, reset } = useSearchDispatch()
+  const { add: addResults, reset } = useSearchDispatch()
+  const { add: addTodo } = useTodoDispatch()
+
+  const handleAddTodo = async (title: string) => {
+    try {
+      changeStatus(StatusTypes.SAVING)
+      await addTodo({ title })
+      resetInput()
+    } catch (error) {
+      console.error(error)
+      alert('Something went wrong.')
+    } finally {
+      changeStatus(StatusTypes.IDLE)
+    }
+  }
 
   const addMore = async () => {
     if (isEnd) return
     changeStatus(StatusTypes.SEARCHING)
-    await add(keyword, Math.floor(results.length / RECEIVING_LIMIT) + 1)
+    await addResults(keyword, Math.floor(results.length / RECEIVING_LIMIT) + 1)
     changeStatus(StatusTypes.IDLE)
   }
 
@@ -42,7 +57,7 @@ const Dropdown = ({
   useEffect(() => {
     const fetch = async () => {
       changeStatus(StatusTypes.SEARCHING)
-      await add(keyword)
+      await addResults(keyword)
       changeStatus(StatusTypes.IDLE)
     }
 
