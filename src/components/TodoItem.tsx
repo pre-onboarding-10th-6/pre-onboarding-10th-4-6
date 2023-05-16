@@ -46,10 +46,8 @@ const TodoItemLayout = styled.li`
   padding: 17px 1.5rem;
   border-bottom: 1px solid #eaeaea;
   font-size: 1.2rem;
-  letter-spacing: 1.5px;
 
   &:hover {
-    opacity: 0.85;
     background-color: #eaeaea;
   }
 `

@@ -34,10 +34,6 @@ const TodoInput = () => {
     }
   }
 
-  useEffect(() => {
-    setFocus()
-  }, [setFocus])
-
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       try {
@@ -59,6 +55,10 @@ const TodoInput = () => {
     },
     [value]
   )
+
+  useEffect(() => {
+    setFocus()
+  }, [setFocus])
 
   return (
     <TodoInputLayout>
