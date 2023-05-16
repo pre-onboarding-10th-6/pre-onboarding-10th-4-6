@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { FaSpinner, FaTrash } from 'react-icons/fa'
 
 import { deleteTodo } from '../../../api/todo'
+import useTryCatchErrorHandling from '../../../hooks/useTryCatchErrorHandling'
 
 import { Todo } from './types'
 
@@ -12,17 +13,17 @@ interface Props {
 
 const TodoButton = ({ setTodos, id }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
-
-  const handleRemoveTodo = async () => {
+  const tryCatchHandleRemoveTodo = useTryCatchErrorHandling(async () => {
     setIsLoading(true)
     await deleteTodo(id)
     setTodos(prev => prev.filter(item => item.id !== id))
     setIsLoading(false)
-  }
+  })
+
   return (
     <div className="item-option">
       {!isLoading ? (
-        <button onClick={handleRemoveTodo}>
+        <button onClick={tryCatchHandleRemoveTodo}>
           <FaTrash className="btn-trash" />
         </button>
       ) : (
