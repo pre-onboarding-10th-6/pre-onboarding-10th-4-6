@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { getTodoList } from '../../api/todo'
+import ErrorBoundary from '../../components/ErroBoundary'
 import InputTodo from '../../components/InputTodo'
 import SearchBar from '../../components/SearchBar'
 import TodoList from '../../components/TodoList'
@@ -23,23 +24,25 @@ const Main = () => {
   }, [])
   console.log('rr', todoListData)
   return (
-    <MainWrap>
-      <MainContent>
-        <Header>
-          <Title>Todos</Title>
-        </Header>
-        <InputTodo
-          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
-        />
-        <SearchBar
-          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
-        />
-        <TodoList
-          todos={todoListData as TodoData[]}
-          setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
-        />
-      </MainContent>
-    </MainWrap>
+    <ErrorBoundary>
+      <MainWrap>
+        <MainContent>
+          <Header>
+            <Title>Todos</Title>
+          </Header>
+          <InputTodo
+            setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+          />
+          <SearchBar
+            setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+          />
+          <TodoList
+            todos={todoListData as TodoData[]}
+            setTodos={setTodoListData as Dispatch<SetStateAction<TodoData[]>>}
+          />
+        </MainContent>
+      </MainWrap>
+    </ErrorBoundary>
   )
 }
 
