@@ -16,7 +16,7 @@ interface InputTodoProps {
   setTodos: Dispatch<SetStateAction<TodoData[]>>
 }
 
-const InputTodo = ({ setTodos }: InputTodoProps) => {
+const InputTodo: React.FC<InputTodoProps> = ({ setTodos }) => {
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { ref, setFocus } = useFocus()
