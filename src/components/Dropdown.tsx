@@ -87,7 +87,7 @@ const DropdownLayout = styled.ul`
   top: 55px;
   width: 100%;
   height: 200px;
-  padding: 9px 5px;
+  padding: 9px 0 9px 5px;
   border: 1px solid #dedede;
   border-radius: 5px;
   background: #fff;
@@ -108,11 +108,12 @@ const DropdownLayout = styled.ul`
 
 const DropdownItem = styled.li`
   overflow: hidden;
-  padding: 6px 12px;
+  padding: 6px 0 6px 12px;
   border-radius: 3px;
   background: #fff;
   line-height: 1.5;
   text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:hover {
     background: #f2f2f2;
