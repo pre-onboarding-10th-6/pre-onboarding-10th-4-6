@@ -2,29 +2,31 @@ import { useCallback, useState } from 'react'
 import { FaSpinner, FaTrash } from 'react-icons/fa'
 
 import { deleteTodo } from '../api/todo'
+import { useTodoDispatch } from '../context/TodoContextProvider'
+import { removeTodo } from '../context/todoReducer'
 
 type Props = {
   id: string
   title: string
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
 }
 
-const TodoItem = ({ id, title, setTodos }: Props) => {
+const TodoItem = ({ id, title }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useTodoDispatch()
 
   const handleRemoveTodo = useCallback(async () => {
     try {
       setIsLoading(true)
       await deleteTodo(id)
 
-      setTodos(prev => prev.filter(item => item.id !== id))
+      dispatch(removeTodo(id))
     } catch (error) {
       console.error(error)
       alert('Something went wrong.')
     } finally {
       setIsLoading(false)
     }
-  }, [id, setTodos])
+  }, [id])
 
   return (
     <li className="item">

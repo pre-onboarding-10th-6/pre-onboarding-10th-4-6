@@ -2,15 +2,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle, FaSpinner } from 'react-icons/fa'
 
 import { createTodo } from '../api/todo'
+import { useTodoDispatch } from '../context/TodoContextProvider'
+import { addTodo } from '../context/todoReducer'
 import useFocus from '../hooks/useFocus'
 
-type Props = {
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
-}
-
-const InputTodo = ({ setTodos }: Props) => {
+const InputTodo = () => {
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useTodoDispatch()
+
   const { ref, setFocus } = useFocus() as {
     ref: React.RefObject<HTMLInputElement>
     setFocus: () => void
@@ -35,7 +35,7 @@ const InputTodo = ({ setTodos }: Props) => {
         const { data } = await createTodo(newItem)
 
         if (data) {
-          return setTodos(prev => [...prev, data])
+          return dispatch(addTodo(data))
         }
       } catch (error) {
         console.error(error)
@@ -45,7 +45,7 @@ const InputTodo = ({ setTodos }: Props) => {
         setIsLoading(false)
       }
     },
-    [inputText, setTodos]
+    [inputText]
   )
 
   return (

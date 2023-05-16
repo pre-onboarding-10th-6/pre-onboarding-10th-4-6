@@ -1,15 +1,14 @@
+import { useTodoState } from '../context/TodoContextProvider'
+
 import TodoItem from './TodoItem'
 
-type Props = {
-  todos: Todo[]
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
-}
+const TodoList = () => {
+  const { todos } = useTodoState()
 
-const TodoList = ({ todos, setTodos }: Props) => {
   return todos.length ? (
     <ul>
       {todos.map(({ id, title }) => (
-        <TodoItem key={id} id={id} title={title} setTodos={setTodos} />
+        <TodoItem key={id} id={id} title={title} />
       ))}
     </ul>
   ) : (

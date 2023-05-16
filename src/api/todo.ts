@@ -4,7 +4,7 @@ const RESOURCE = '/todos'
 
 export const getTodoList = async () => {
   try {
-    const response = await apiRequest.get(`${RESOURCE}`)
+    const response = await apiRequest.get<Todo[]>(`${RESOURCE}`)
 
     return response
   } catch (error) {
@@ -12,9 +12,9 @@ export const getTodoList = async () => {
   }
 }
 
-export const createTodo = async (data: any) => {
+export const createTodo = async (data: { title: string }) => {
   try {
-    const response = await apiRequest.post(`${RESOURCE}`, data)
+    const response = await apiRequest.post<Todo>(`${RESOURCE}`, data)
 
     return response
   } catch (error) {

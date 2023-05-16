@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { getTodoList } from '../api/todo'
 import Header from '../components/Header'
 import InputTodo from '../components/InputTodo'
 import TodoList from '../components/TodoList'
+import { useTodoDispatch } from '../context/TodoContextProvider'
+import { setTodos } from '../context/todoReducer'
 
 const Main = () => {
-  const [todoListData, setTodoListData] = useState<Todo[]>([])
+  const dispatch = useTodoDispatch()
 
   useEffect(() => {
     ;(async () => {
       const { data } = await getTodoList()
-      setTodoListData(data || [])
+      dispatch(setTodos(data || []))
     })()
   }, [])
 
@@ -19,8 +21,8 @@ const Main = () => {
     <div className="container">
       <div className="inner">
         <Header />
-        <InputTodo setTodos={setTodoListData} />
-        <TodoList todos={todoListData} setTodos={setTodoListData} />
+        <InputTodo />
+        <TodoList />
       </div>
     </div>
   )
