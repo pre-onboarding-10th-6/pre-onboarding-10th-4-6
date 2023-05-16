@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { getSuggestion } from '../api/suggestion'
+import { createTodo } from '../api/todo'
 import { StSpinner } from '../styles/common'
 import { ISuggestionRes } from '../types/suggestion'
+import { ITodo } from '../types/todo'
 import throttle from '../utils/throttle'
 
 import TextHighlight from './TextHighlight'
@@ -11,8 +13,17 @@ import TextHighlight from './TextHighlight'
 interface IProps {
   suggest: ISuggestionRes
   dropdownRef: React.RefObject<HTMLDivElement>
+  setIsLoading: Dispatch<React.SetStateAction<boolean>>
+  addTodoListData: (newTodo: ITodo) => void
+  setInputText: Dispatch<React.SetStateAction<string>>
 }
-const SuggestList = ({ suggest, dropdownRef }: IProps) => {
+const SuggestList = ({
+  suggest,
+  dropdownRef,
+  setIsLoading,
+  addTodoListData,
+  setInputText
+}: IProps) => {
   const { q, page: initPage, result, total, limit } = suggest
   const [list, setList] = useState(result)
   const [page, setPage] = useState(initPage)
@@ -66,6 +77,27 @@ const SuggestList = ({ suggest, dropdownRef }: IProps) => {
     getSuggestListByPage()
   }, [getSuggestListByPage])
 
+  const handleSubmit = useCallback(async (v: string) => {
+    try {
+      setIsLoading(true)
+
+      const newItem = {
+        title: v
+      }
+      const { data } = await createTodo(newItem)
+
+      if (data) {
+        return addTodoListData(data)
+      }
+    } catch (error) {
+      console.error(error)
+      alert('Something went wrong.')
+    } finally {
+      setInputText('')
+      setIsLoading(false)
+    }
+  }, [])
+
   const SuggestList = () => {
     return (
       <>
@@ -76,7 +108,10 @@ const SuggestList = ({ suggest, dropdownRef }: IProps) => {
             <StUl>
               {list.map((v, idx) => {
                 return (
-                  <StLi key={v + idx.toString()}>
+                  <StLi
+                    key={v + idx.toString()}
+                    onClick={() => handleSubmit(v)}
+                  >
                     <TextHighlight targetText={v} searchText={q} />
                   </StLi>
                 )

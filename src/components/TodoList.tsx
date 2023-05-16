@@ -1,5 +1,3 @@
-import { Interface } from 'readline'
-
 import { Dispatch } from 'react'
 import { styled } from 'styled-components'
 

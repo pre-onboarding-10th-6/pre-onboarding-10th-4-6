@@ -16,7 +16,9 @@ export const getTodoList = async (): Promise<AxiosResponse<ITodo[]>> => {
   }
 }
 
-export const createTodo = async (data: ICreateTodo) => {
+export const createTodo = async (
+  data: ICreateTodo
+): Promise<AxiosResponse<ITodo>> => {
   try {
     const response = await apiRequest.post(`${RESOURCE}`, data)
 
