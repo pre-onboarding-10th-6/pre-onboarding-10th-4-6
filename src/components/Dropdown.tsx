@@ -1,8 +1,10 @@
 import React from 'react'
 import { styled } from 'styled-components'
 
+import { createTodo, Todo } from '../api/todo'
+
 const DropdownBoxStyle = styled.ul`
-  width: 364px;
+  width: 100%;
   height: 164px;
   padding: 9px 5px 0;
   overflow-y: scroll;
@@ -56,14 +58,48 @@ const highlightKeywords = (keyword: string, result: string) => {
   ))
 }
 
-const Dropdown = () => {
-  const keyword = '예시'
-  const result = '예시입니다.'
+interface DropdownProps {
+  searchResult: string[]
+  keyword: string
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>
+  setDropdown: React.Dispatch<React.SetStateAction<boolean>>
+  setInputText: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Dropdown = ({
+  searchResult,
+  keyword,
+  setTodos,
+  setDropdown,
+  setInputText
+}: DropdownProps) => {
+  const handleResultClick = async (el: string) => {
+    try {
+      const { data } = await createTodo({ title: el })
+      setTodos(prev => [...prev, data])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setDropdown(false)
+      setInputText('')
+    }
+  }
   return (
     <DropdownBoxStyle>
-      <DropdownItemStyle>
-        {highlightKeywords(keyword, result)}
-      </DropdownItemStyle>
+      {searchResult.length === 0 ? (
+        <div>추천 검색어가 없습니다.</div>
+      ) : (
+        searchResult.map((el, index) => (
+          <DropdownItemStyle
+            key={index}
+            onClick={() => {
+              handleResultClick(el)
+            }}
+          >
+            {highlightKeywords(keyword, el)}
+          </DropdownItemStyle>
+        ))
+      )}
     </DropdownBoxStyle>
   )
 }

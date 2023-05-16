@@ -1,10 +1,13 @@
+import { debounce } from 'lodash'
 import React, { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 
+import { searchTodo } from '../api/search'
 import { createTodo, Todo } from '../api/todo'
 import searchIcon from '../assets/search_icon.png'
 import useFocus from '../hooks/useFocus'
 
+import Dropdown from './Dropdown'
 import Spinner from './Spinner'
 
 interface InputTodoProps {
@@ -55,6 +58,8 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
   const [inputText, setInputText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { ref, setFocus } = useFocus()
+  const [searchResult, setSearchResult] = useState([])
+  const [dropdown, setDropdwon] = useState(false)
 
   useEffect(() => {
     setFocus()
@@ -88,17 +93,47 @@ const InputTodo = ({ setTodos }: InputTodoProps) => {
     [inputText, setTodos]
   )
 
+  const debouncedFetchData = debounce(async (inputText: string) => {
+    if (inputText !== '') {
+      try {
+        setIsLoading(true)
+        const res = await searchTodo(inputText, 1, 10)
+        setSearchResult(res.result)
+        setDropdwon(true)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }, 300)
+
+  useEffect(() => {
+    debouncedFetchData(inputText)
+  }, [inputText])
+
   return (
-    <InputTodoWrapper onSubmit={handleSubmit}>
-      <InputStyle
-        placeholder="Add new todo..."
-        ref={ref}
-        value={inputText}
-        onChange={e => setInputText(e.target.value)}
-        disabled={isLoading}
-      />
-      {isLoading ? null : <InputSpinner />}
-    </InputTodoWrapper>
+    <>
+      <InputTodoWrapper onSubmit={handleSubmit}>
+        <InputStyle
+          placeholder="Add new todo..."
+          ref={ref}
+          value={inputText}
+          onChange={e => setInputText(e.target.value)}
+          disabled={isLoading}
+        />
+        {isLoading ? <InputSpinner /> : null}
+      </InputTodoWrapper>
+      {dropdown ? (
+        <Dropdown
+          searchResult={searchResult}
+          keyword={inputText}
+          setTodos={setTodos}
+          setDropdown={setDropdwon}
+          setInputText={setInputText}
+        />
+      ) : null}
+    </>
   )
 }
 
