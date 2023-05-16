@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaSpinner } from 'react-icons/fa'
 import styled from 'styled-components'
 
 import { SearchData, getSearchData } from '../api/search'
 import useDebounce from '../hooks/useDebounce'
+import useIntersectionObserver from '../hooks/useInfiniteScroll'
 
 import KeywordItem from './KeywordItem'
 
@@ -19,6 +20,10 @@ interface RecommandKeywordListProp {
   keyword: string
   onSelect: (selectedText: string) => Promise<void>
 }
+
+const PAGE_LIMIT = 10
+const DELAY_TIME = 500
+
 const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
   keyword,
   onSelect
@@ -26,15 +31,24 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
   const [currentPage, setCurrentPage] = useState(1)
   const [keywordData, setKeywordData] = useState<SearchData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const debouncedKeyword = useDebounce(keyword, 500)
+  const debouncedKeyword = useDebounce(keyword, DELAY_TIME)
+  const totalResults = keywordData?.total || 0
+  const totalPages = Math.ceil(totalResults / PAGE_LIMIT) ?? 0
+  const isLastPage = currentPage >= totalPages
 
   const shouldRenderList =
     keyword.trim() !== '' && keywordData && keywordData?.result?.length > 0
 
   const handleMoreButtonClick = () => {
+    if (isLastPage) {
+      return
+    }
     setCurrentPage(prevPageNumber => prevPageNumber + 1)
   }
+  const { targetRef } = useIntersectionObserver(
+    handleMoreButtonClick,
+    isLoading
+  )
 
   useEffect(() => {
     setCurrentPage(1)
@@ -50,7 +64,7 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
     getSearchData({
       q: debouncedKeyword,
       page: currentPage,
-      limit: 10
+      limit: PAGE_LIMIT
     })
       .then(({ data }) => {
         setKeywordData(prevData => {
@@ -89,11 +103,17 @@ const RecommandKeywordList: React.FC<RecommandKeywordListProp> = ({
         ))}
 
         <li>
-          {isLoading ? (
-            <FaSpinner className="spinner" />
-          ) : (
-            <FaChevronDown onClick={handleMoreButtonClick} />
-          )}
+          <div ref={targetRef}>
+            {!isLastPage && (
+              <>
+                {isLoading ? (
+                  <FaSpinner className="spinner" />
+                ) : (
+                  <FaChevronDown />
+                )}
+              </>
+            )}
+          </div>
         </li>
       </ul>
     </ListContainer>
