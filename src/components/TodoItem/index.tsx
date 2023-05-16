@@ -30,7 +30,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ id, title, setTodos }) => {
   }, [id, setTodos])
 
   return (
-    <Item>
+    <Item data-cy="todo-item">
       <span>{title}</span>
       <ItemOption>
         {!isLoading ? (

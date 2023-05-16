@@ -69,7 +69,7 @@ const SearchBar: React.FC<InputTodoProps> = ({ setTodos }) => {
       }
     }
   }, [handleScroll, searchText, searchResult, total])
-  console.log('searchText', searchResult)
+  // console.log('searchText', searchResult)
   //   console.log('total', total)
   return (
     <>

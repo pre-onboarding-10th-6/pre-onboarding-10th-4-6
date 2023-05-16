@@ -9,7 +9,7 @@ interface TodoListProps {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ todos, setTodos }) => {
-  console.log('tt', todos)
+  // console.log('tt', todos)
   return todos.length ? (
     <ul>
       {todos.map(({ id, title }) => (
