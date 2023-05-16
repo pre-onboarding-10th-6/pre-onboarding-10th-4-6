@@ -113,6 +113,7 @@ const DropdownItem = styled.li`
   background: #fff;
   line-height: 1.5;
   text-overflow: ellipsis;
+  white-space: nowrap;
 
   &:hover {
     background: #f2f2f2;
