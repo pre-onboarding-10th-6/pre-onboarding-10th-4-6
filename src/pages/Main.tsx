@@ -10,6 +10,10 @@ import { ITodo } from '../types/todo'
 const Main = () => {
   const [todoListData, setTodoListData] = useState<ITodo[]>([])
 
+  const addTodoListData = (newTodo: ITodo) => {
+    setTodoListData(_todoListData => [..._todoListData, newTodo])
+  }
+
   const initTodoList = useCallback(async () => {
     const { data } = await getTodoList()
     setTodoListData(data || [])
@@ -23,7 +27,10 @@ const Main = () => {
     <StContainer>
       <StInner>
         <Header />
-        <InputTodo setTodos={setTodoListData} />
+        <InputTodo
+          setTodos={setTodoListData}
+          addTodoListData={addTodoListData}
+        />
         {todoListData && (
           <TodoList todos={todoListData} setTodos={setTodoListData} />
         )}

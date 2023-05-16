@@ -15,9 +15,10 @@ import SuggestList from './suggestList'
 
 interface IProps {
   setTodos: Dispatch<React.SetStateAction<ITodo[]>>
+  addTodoListData: (newTodo: ITodo) => void
 }
 
-const InputTodo = ({ setTodos }: IProps) => {
+const InputTodo = ({ setTodos, addTodoListData }: IProps) => {
   const [inputText, setInputText] = useState<string>('')
   const [suggest, setSuggest] = useState<ISuggestionRes>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -62,6 +63,7 @@ const InputTodo = ({ setTodos }: IProps) => {
         }
         const newItem = { title: trimmed }
         const { data } = await createTodo(newItem)
+
         if (data) {
           return setTodos(prev => [...prev, data])
         }
@@ -102,6 +104,9 @@ const InputTodo = ({ setTodos }: IProps) => {
         <SuggestList
           suggest={suggest}
           dropdownRef={dropdownRef as React.RefObject<HTMLDivElement>}
+          setIsLoading={setIsLoading}
+          addTodoListData={addTodoListData}
+          setInputText={setInputText}
         />
       )}
     </>
