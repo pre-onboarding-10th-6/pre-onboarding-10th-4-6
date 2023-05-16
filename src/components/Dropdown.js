@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Color from './Color'
+import { searchTodo } from "../api/todo";
 
 const DropdownContainer = styled.div`
   width: auto;
@@ -35,13 +36,38 @@ const DropdownItem = styled.li`
   }
 `;
 
+const Loading = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const Dropdown = ({ items, handleItemSelection, inputText }) => {
+  const [loading, setLoading] = useState(false);
+
   const handleItemClick = (item) => {
     handleItemSelection(item); 
   };
 
+  useEffect(() => {
+    const handleScroll = (event) => {
+      const target = event.target;
+      if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+        console.log('끝까지 옴')
+        setLoading(true)
+      }
+    };
+
+    const dropdownContainer = document.getElementById("dropdown-container");
+    dropdownContainer.addEventListener("scroll", handleScroll);
+
+    return () => {
+      dropdownContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <DropdownContainer>
+    <DropdownContainer id='dropdown-container'>
       <DropdownList>
         {items.map((item) => (
           <DropdownItem 
@@ -51,6 +77,7 @@ const Dropdown = ({ items, handleItemSelection, inputText }) => {
             <Color inputText={inputText}>{item}</Color>
           </DropdownItem>
         ))}
+        {loading && <Loading>. . .</Loading>}
       </DropdownList>
     </DropdownContainer>
   );

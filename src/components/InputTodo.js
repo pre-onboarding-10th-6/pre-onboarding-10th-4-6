@@ -22,7 +22,7 @@ const InputTodo = ({ setTodos }) => {
       return (value) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
-          console.log("Debounced input value:", value);
+          // console.log("Debounced input value:", value);
           handleInputChange(value);
         }, 500);
       };
@@ -31,8 +31,8 @@ const InputTodo = ({ setTodos }) => {
   );
 
   const handleInputChange = useCallback(async (value) => {
-    setInputText(value); 
     setIsLoading(true); 
+    setInputText(value); 
 
     if (!value) { 
       setDropdownItems([]); 

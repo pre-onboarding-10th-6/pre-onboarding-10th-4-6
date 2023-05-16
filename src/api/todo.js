@@ -34,7 +34,7 @@ export const deleteTodo = async (id) => {
 
 export const searchTodo = async (data) => {
   try {
-    const response = await apiRequest.get(`/search?q=${data}&page=1&limit=20`);
+    const response = await apiRequest.get(`/search?q=${data}&page=1&limit=10`);
 
     return response
   } catch (error) {
