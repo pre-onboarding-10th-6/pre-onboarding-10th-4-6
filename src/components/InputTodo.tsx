@@ -8,6 +8,7 @@ import useCloseDropdown from '../hooks/useCloseDropDown'
 import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import { StSpinner } from '../styles/common'
+import { ISuggestionRes } from '../types/suggestion'
 import { ITodo } from '../types/todo'
 
 import SuggestList from './suggestList'
@@ -18,7 +19,7 @@ interface IProps {
 
 const InputTodo = ({ setTodos }: IProps) => {
   const [inputText, setInputText] = useState<string>('')
-  const [suggestList, setSuggestList] = useState<string[]>()
+  const [suggest, setSuggest] = useState<ISuggestionRes>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { ref, setFocus } = useFocus()
   const [isOpenDropdown, dropdownRef, dropdownHandler] = useCloseDropdown(false)
@@ -30,19 +31,19 @@ const InputTodo = ({ setTodos }: IProps) => {
 
   const getSuggestList = useCallback(async () => {
     if (debounceInput === '') {
-      setSuggestList(undefined)
+      setSuggest(undefined)
       return
     }
     try {
       const { data } = await getSuggestion({ q: debounceInput })
-      const { result } = data
-      setSuggestList(result)
+
+      setSuggest(data)
       if (!isOpenDropdown) {
         dropdownHandler()
       }
     } catch (error) {
       console.error(error)
-      setSuggestList(undefined)
+      setSuggest(undefined)
     }
   }, [debounceInput])
 
@@ -97,9 +98,9 @@ const InputTodo = ({ setTodos }: IProps) => {
           <StSpinner />
         )}
       </StFormContainer>
-      {isOpenDropdown && (
+      {isOpenDropdown && suggest && (
         <SuggestList
-          suggestList={suggestList}
+          suggest={suggest}
           dropdownRef={dropdownRef as React.RefObject<HTMLDivElement>}
         />
       )}
