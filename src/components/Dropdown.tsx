@@ -70,7 +70,11 @@ const Dropdown = ({
   return isDropdownVisible && results.length ? (
     <DropdownLayout ref={infiniteScrollRef}>
       {results.map(result => (
-        <DropdownItem key={result} onClick={() => handleAddTodo(result)}>
+        <DropdownItem
+          key={result}
+          onClick={() => handleAddTodo(result)}
+          data-cy="dropdown-item"
+        >
           <ColoredKeyword text={result} keyword={keyword} />
         </DropdownItem>
       ))}

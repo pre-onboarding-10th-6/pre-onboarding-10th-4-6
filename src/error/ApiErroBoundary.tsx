@@ -49,6 +49,7 @@ class ApiErrorBoundary extends React.Component<
 }
 
 class HttpError extends Error {
+  [x: string]: any
   constructor(public statusCode: number) {
     super()
 

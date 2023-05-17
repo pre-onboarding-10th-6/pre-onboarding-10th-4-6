@@ -64,6 +64,7 @@ const TodoInput = () => {
           disabled={!isIdle}
           onBlur={handleFocus}
           onFocus={handleFocus}
+          data-cy="search-input"
         />
         {isIdle ? (
           <TodoInputSubmitButton>
@@ -79,6 +80,7 @@ const TodoInput = () => {
         resetInput={reset}
         changeStatus={changeStatus}
         isDropdownVisible={isDropdownVisible}
+        data-cy="search-dropdown"
       />
     </TodoInputLayout>
   )

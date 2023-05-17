@@ -11,7 +11,7 @@ export class TodoService {
 
   async get() {
     try {
-      return await this.apiRequest.get(`${this.RESOURCE}aa`)
+      return await this.apiRequest.get(`${this.RESOURCE}`)
     } catch (error: any) {
       throw new HttpError(error.response.status)
     }
