@@ -1,4 +1,5 @@
 import { AxiosClient } from '../axiosClient'
+import { HttpError } from '../error/ApiErroBoundary'
 
 export class SearchService {
   private RESOURCE = '/search'
@@ -10,16 +11,15 @@ export class SearchService {
 
   async get(q: string, page = 1, limit = 10) {
     try {
-      const response = await this.apiRequest.get(`${this.RESOURCE}`, {
+      return await this.apiRequest.get(`${this.RESOURCE}`, {
         params: {
           q,
           page,
           limit
         }
       })
-      return response
-    } catch (error) {
-      throw new Error(`API get error: ${this.RESOURCE}`)
+    } catch (error: any) {
+      throw new HttpError(error.response.status)
     }
   }
 }

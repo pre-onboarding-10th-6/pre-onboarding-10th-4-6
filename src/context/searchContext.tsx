@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer } from 'react'
 
+import useTryCatchErrorHandling from '../error/useTryCatchErrorHandling'
 import { SearchService } from '../service/SearchService'
 
 import searchReducer, { SearchActionTypes, SearchState } from './searchReducer'
@@ -34,16 +35,18 @@ interface SearchProviderProps {
 function SearchProvider({ children, searchService }: SearchProviderProps) {
   const [state, dispatch] = useReducer(searchReducer, initialState)
 
-  const add = async (keyword: string, page?: number, limit?: number) => {
-    const { data } = await searchService.get(keyword, page, limit)
-    dispatch({
-      type: SearchActionTypes.ADD_RESULTS,
-      payload: {
-        results: data.result,
-        total: data.total
-      }
-    })
-  }
+  const add = useTryCatchErrorHandling(
+    async (keyword: string, page?: number, limit?: number) => {
+      const { data } = await searchService.get(keyword, page, limit)
+      dispatch({
+        type: SearchActionTypes.ADD_RESULTS,
+        payload: {
+          results: data.result,
+          total: data.total
+        }
+      })
+    }
+  )
 
   const reset = () => {
     dispatch({

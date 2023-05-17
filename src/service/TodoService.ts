@@ -1,4 +1,5 @@
 import { AxiosClient } from '../axiosClient'
+import { HttpError } from '../error/ApiErroBoundary'
 
 export class TodoService {
   private RESOURCE = '/todos'
@@ -10,28 +11,25 @@ export class TodoService {
 
   async get() {
     try {
-      const response = await this.apiRequest.get(`${this.RESOURCE}`)
-      return response
-    } catch (error) {
-      throw new Error(`API get error: ${this.RESOURCE}`)
+      return await this.apiRequest.get(`${this.RESOURCE}aa`)
+    } catch (error: any) {
+      throw new HttpError(error.response.status)
     }
   }
 
   async create(todo: { title: string }) {
     try {
-      const response = await this.apiRequest.post(`${this.RESOURCE}`, todo)
-      return response
-    } catch (error) {
-      throw new Error(`API create error: ${this.RESOURCE}`)
+      return await this.apiRequest.post(`${this.RESOURCE}`, todo)
+    } catch (error: any) {
+      throw new HttpError(error.response.status)
     }
   }
 
   async delete(id: string) {
     try {
-      const response = await this.apiRequest.delete(`${this.RESOURCE}/${id}`)
-      return response
-    } catch (error) {
-      throw new Error(`API delete error: ${this.RESOURCE}`)
+      return await this.apiRequest.delete(`${this.RESOURCE}/${id}`)
+    } catch (error: any) {
+      throw new HttpError(error.response.status)
     }
   }
 }
