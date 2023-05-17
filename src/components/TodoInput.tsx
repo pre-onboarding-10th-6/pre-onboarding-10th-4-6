@@ -105,6 +105,8 @@ const TodoInputForm = styled.form`
     font-size: 1rem;
     font-weight: 400;
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 `
 
