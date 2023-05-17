@@ -1,3 +1,4 @@
+import React from 'react'
 import { useEffect } from 'react'
 import { FaEllipsisH } from 'react-icons/fa'
 import styled from 'styled-components'
