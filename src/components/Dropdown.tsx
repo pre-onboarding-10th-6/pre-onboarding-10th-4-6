@@ -15,6 +15,7 @@ interface DropdownProps {
   isSearching: boolean
   resetInput: () => void
   changeStatus: (state: StatusTypes) => void
+  isDropdownVisible: boolean
 }
 
 const RECEIVING_LIMIT = 10
@@ -23,7 +24,8 @@ const Dropdown = ({
   keyword,
   isSearching,
   resetInput,
-  changeStatus
+  changeStatus,
+  isDropdownVisible
 }: DropdownProps) => {
   const { results, isEnd } = useSearchState()
   const { add: addResults, reset } = useSearchDispatch()
@@ -65,7 +67,7 @@ const Dropdown = ({
     keyword && fetch()
   }, [keyword])
 
-  return results.length ? (
+  return isDropdownVisible && results.length ? (
     <DropdownLayout ref={infiniteScrollRef}>
       {results.map(result => (
         <DropdownItem key={result} onClick={() => handleAddTodo(result)}>
