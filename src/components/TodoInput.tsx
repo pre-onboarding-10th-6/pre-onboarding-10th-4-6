@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaPlusCircle, FaSearch } from 'react-icons/fa'
 import styled from 'styled-components'
 
@@ -20,6 +20,11 @@ const TodoInput = () => {
   const { status, changeStatus, isIdle } = useStatus()
   const { ref, setFocus } = useFocus<HTMLInputElement>()
   const { add } = useTodoDispatch()
+
+  const [isDropdownVisible, setIsDropdownVisible] = useState(true)
+  const handleFocus = () => {
+    setIsDropdownVisible(document.activeElement === ref.current)
+  }
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,7 +50,7 @@ const TodoInput = () => {
 
   useEffect(() => {
     setFocus()
-  }, [setFocus])
+  }, [])
 
   return (
     <TodoInputLayout>
@@ -57,6 +62,8 @@ const TodoInput = () => {
           value={value}
           onChange={handleChange}
           disabled={!isIdle}
+          onBlur={handleFocus}
+          onFocus={handleFocus}
         />
         {isIdle ? (
           <TodoInputSubmitButton>
@@ -71,6 +78,7 @@ const TodoInput = () => {
         isSearching={status === StatusTypes.SEARCHING}
         resetInput={reset}
         changeStatus={changeStatus}
+        isDropdownVisible={isDropdownVisible}
       />
     </TodoInputLayout>
   )
