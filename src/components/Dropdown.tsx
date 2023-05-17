@@ -75,7 +75,11 @@ const Dropdown = ({
           onClick={() => handleAddTodo(result)}
           data-cy="dropdown-item"
         >
-          <ColoredKeyword text={result} keyword={keyword} />
+          {keyword.length ? (
+            <ColoredKeyword text={result} keyword={keyword} />
+          ) : (
+            result
+          )}
         </DropdownItem>
       ))}
       <DropdownOption>
