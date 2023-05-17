@@ -3,6 +3,7 @@ import { FaPlusCircle, FaSearch } from 'react-icons/fa'
 import styled from 'styled-components'
 
 import { useTodoDispatch } from '../context/todoContext'
+import useClickAndBlur from '../hooks/useClickAndBlur'
 import useDebounce from '../hooks/useDebounce'
 import useFocus from '../hooks/useFocus'
 import useInput from '../hooks/useInput'
@@ -19,11 +20,16 @@ const TodoInput = () => {
 
   const { status, changeStatus, isIdle } = useStatus()
   const { ref, setFocus } = useFocus<HTMLInputElement>()
+  const { handleClick, handleBlur } = useClickAndBlur()
   const { add } = useTodoDispatch()
-
   const [isDropdownVisible, setIsDropdownVisible] = useState(true)
-  const handleFocus = () => {
-    setIsDropdownVisible(document.activeElement === ref.current)
+
+  const handleFocus = (e: React.FocusEvent) => {
+    if (ref.current?.contains(e.target as Node)) {
+      setIsDropdownVisible(true)
+    } else {
+      setIsDropdownVisible(false)
+    }
   }
 
   const handleSubmit = useCallback(
@@ -47,10 +53,11 @@ const TodoInput = () => {
     },
     [value]
   )
-
   useEffect(() => {
-    setFocus()
-  }, [])
+    if (document.activeElement !== ref.current) {
+      setFocus()
+    }
+  }, [setFocus])
 
   return (
     <TodoInputLayout>
@@ -62,8 +69,9 @@ const TodoInput = () => {
           value={value}
           onChange={handleChange}
           disabled={!isIdle}
-          onBlur={handleFocus}
+          onBlur={handleBlur}
           onFocus={handleFocus}
+          onClick={handleClick}
           data-cy="search-input"
         />
         {isIdle ? (

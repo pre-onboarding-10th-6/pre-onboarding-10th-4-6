@@ -36,6 +36,7 @@ const Dropdown = ({
       changeStatus(StatusTypes.SAVING)
       await addTodo({ title })
       resetInput()
+      reset()
     } catch (error) {
       console.error(error)
       alert('Something went wrong.')
