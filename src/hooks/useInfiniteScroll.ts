@@ -16,7 +16,7 @@ const useInfiniteScroll = <T extends HTMLElement>(
       }
 
       const { scrollHeight, scrollTop, clientHeight } = container
-      if (canScroll && scrollTop + clientHeight >= scrollHeight) {
+      if (canScroll && Math.ceil(scrollTop + clientHeight) >= scrollHeight) {
         onScrollEnd()
         setCanScroll(false)
       }
