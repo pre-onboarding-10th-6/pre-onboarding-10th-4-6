@@ -27,7 +27,7 @@ const TodoItem = ({ id, title }: TodoItemProps) => {
   }, [id])
 
   return (
-    <TodoItemLayout>
+    <TodoItemLayout data-cy="todo-item">
       <span>{title}</span>
       <TodoItemOptionBox>
         {!isInProgress ? (

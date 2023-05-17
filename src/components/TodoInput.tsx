@@ -80,7 +80,6 @@ const TodoInput = () => {
         resetInput={reset}
         changeStatus={changeStatus}
         isDropdownVisible={isDropdownVisible}
-        data-cy="search-dropdown"
       />
     </TodoInputLayout>
   )

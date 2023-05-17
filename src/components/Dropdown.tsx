@@ -68,7 +68,7 @@ const Dropdown = ({
   }, [keyword])
 
   return isDropdownVisible && results.length ? (
-    <DropdownLayout ref={infiniteScrollRef}>
+    <DropdownLayout ref={infiniteScrollRef} data-cy="search-dropdown">
       {results.map(result => (
         <DropdownItem
           key={result}
