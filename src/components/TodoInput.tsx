@@ -1,5 +1,4 @@
-import React from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { FaPlusCircle, FaSearch } from 'react-icons/fa'
 import styled from 'styled-components'
 
@@ -23,17 +22,8 @@ const TodoInput = () => {
   const { ref, setFocus } = useFocus<HTMLInputElement>()
   const { handleClick, handleBlur } = useClickAndBlur()
   const { add } = useTodoDispatch()
-  const [isDropdownVisible, setIsDropdownVisible] = useState(true)
 
-  const handleFocus = (e: React.FocusEvent) => {
-    if (ref.current?.contains(e.target as Node)) {
-      setIsDropdownVisible(true)
-    } else {
-      setIsDropdownVisible(false)
-    }
-  }
-
-  const handleSubmit = useCallback(
+    const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       try {
         changeStatus(StatusTypes.SAVING)
@@ -71,7 +61,6 @@ const TodoInput = () => {
           onChange={handleChange}
           disabled={!isIdle}
           onBlur={handleBlur}
-          onFocus={handleFocus}
           onClick={handleClick}
           data-cy="search-input"
         />
@@ -88,7 +77,6 @@ const TodoInput = () => {
         isSearching={status === StatusTypes.SEARCHING}
         resetInput={reset}
         changeStatus={changeStatus}
-        isDropdownVisible={isDropdownVisible}
       />
     </TodoInputLayout>
   )

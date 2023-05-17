@@ -540,44 +540,6 @@ describe('Search', () => {
 
 <br >
 
-### 10) focus && blur
-
-- 검색창 input focus 여부에 따라서, DropDown 조건부 렌더링
-- focus 여부는 `isDropdownVisible` 상태변수로 관리
-
-```tsx
-// src/components/TodoInput.tsx
-const TodoInput
-= (props) =>{
-  .
-  .
-  .
-  const [isDropdownVisible, setIsDropdownVisible] = useState(true)
-  const handleFocus = () => { setIsDropdownVisible(document.activeElement === ref.current) }
-
-  return <TodoInputLayout>
-          <TodoInputForm />
-          <Dropdown isDropdownVisible={isDropdownVisible} />
-        </TodoInputLayout>
-}
-
-// src/components/DropDown.tsx
-const Dropdown = (props:{isDropdownVisible}) => {
-  .
-  .
-  .
-  return isDropdownVisible &&
-      <DropdownLayout>
-        <DropdownItem/>
-        <DropdownItem/>
-        <DropdownItem/>
-      </DropdownLayout>
-}
-
-
-
-```
-
 # 5. 설치 & 실행 방법
 
 ```node

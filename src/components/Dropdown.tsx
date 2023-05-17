@@ -1,4 +1,3 @@
-import React from 'react'
 import { useEffect } from 'react'
 import { FaEllipsisH } from 'react-icons/fa'
 import styled from 'styled-components'
@@ -16,7 +15,6 @@ interface DropdownProps {
   isSearching: boolean
   resetInput: () => void
   changeStatus: (state: StatusTypes) => void
-  isDropdownVisible: boolean
 }
 
 const RECEIVING_LIMIT = 10
@@ -26,7 +24,6 @@ const Dropdown = ({
   isSearching,
   resetInput,
   changeStatus,
-  isDropdownVisible
 }: DropdownProps) => {
   const { results, isEnd } = useSearchState()
   const { add: addResults, reset } = useSearchDispatch()
@@ -69,7 +66,7 @@ const Dropdown = ({
     keyword && fetch()
   }, [keyword])
 
-  return isDropdownVisible && results.length ? (
+  return results.length ? (
     <DropdownLayout ref={infiniteScrollRef} data-cy="search-dropdown">
       {results.map(result => (
         <DropdownItem
